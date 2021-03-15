@@ -43,7 +43,12 @@
                 { field: 'DriverPhone', title: '联系电话' },
                 { field: 'VehicleNo', title: '车牌号' },
                 { field: 'CheckTime', title: '签到时间' },
-                { field: 'ShippingDock', title: '出货码头' },
+                {
+                    field: 'ShippingDock', title: '出货码头', formatter: function (value, row, index) {
+                        return top.getDataDictValue('ProductDock', value);
+                    }
+                },
+
             ],
             queryParams: function (params) {
                 var pagination = $('#gridTable').ysTable('getPagination', params);
