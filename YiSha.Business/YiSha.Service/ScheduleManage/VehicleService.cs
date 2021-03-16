@@ -17,7 +17,7 @@ namespace YiSha.Service.ScheduleManage
 {
     /// <summary>
     /// 创 建：admin
-    /// 日 期：2021-03-15 17:01
+    /// 日 期：2021-03-16 15:14
     /// 描 述：车辆签到服务类
     /// </summary>
     public class VehicleService :  RepositoryFactory

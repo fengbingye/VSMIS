@@ -17,7 +17,7 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
 {
     /// <summary>
     /// 创 建：admin
-    /// 日 期：2021-03-15 17:01
+    /// 日 期：2021-03-16 15:14
     /// 描 述：车辆签到控制器类
     /// </summary>
     [Area("ScheduleManage")]

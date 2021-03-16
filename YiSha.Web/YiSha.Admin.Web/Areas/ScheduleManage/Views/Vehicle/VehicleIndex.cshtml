@@ -7,7 +7,7 @@
             <div class="select-list">
                 <ul>
                     <li>
-                        OrderNo：<input id="orderNo" col="OrderNo" type="text" />
+                        司机姓名：<input id="driverName" col="DriverName" type="text" />
                     </li>
                     <li>
                         <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -41,14 +41,18 @@
                 { field: 'DriverName', title: '司机姓名' },
                 { field: 'DriverIdentityNo', title: '身份证号码' },
                 { field: 'DriverPhone', title: '联系电话' },
-                { field: 'VehicleNo', title: '车牌号' },
+                { field: 'VehicleNo', title: '车牌号码' },
                 { field: 'CheckTime', title: '签到时间' },
                 {
-                    field: 'ShippingDock', title: '出货码头', formatter: function (value, row, index) {
-                        return top.getDataDictValue('ProductDock', value);
+                    field: 'MissonType', title: '任务类型', formatter: function (value, row, index) {
+                        return top.getDataDictValue('MissonType', value);
                     }
                 },
-
+                {
+                    field: 'ShippingDock', title: '出货码头', formatter: function (value, row, index) {
+                        return top.getDataDictValue('ShippingDock', value);
+                    }
+                },
             ],
             queryParams: function (params) {
                 var pagination = $('#gridTable').ysTable('getPagination', params);
