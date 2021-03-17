@@ -71,6 +71,35 @@ namespace YiSha.Service.ScheduleManage
             var expression = LinqExtensions.True<OrderEntity>();
             if (param != null)
             {
+                if (!string.IsNullOrEmpty(param.OrderNo))
+                {
+                    expression = expression.And(t => t.OrderNo.Contains(param.OrderNo));
+                }
+                if (param.MissonType > -1)
+                {
+                    expression = expression.And(t => t.MissonType == param.MissonType);
+                }
+                if (param.GoodsType > -1)
+                {
+                    expression = expression.And(t => t.GoodsType == param.GoodsType);
+                }
+                if (param.Destination > -1)
+                {
+                    expression = expression.And(t => t.Destination == param.Destination);
+                }
+                if (param.ShippingDock > -1)
+                {
+                    expression = expression.And(t => t.ShippingDock == param.ShippingDock);
+                }
+                if (!string.IsNullOrEmpty(param.StartTime.ParseToString()))
+                {
+                    expression = expression.And(t => t.CreateTime >= param.StartTime);
+                }
+                if (!string.IsNullOrEmpty(param.EndTime.ParseToString()))
+                {
+                    param.EndTime = param.EndTime.Value.Date.Add(new TimeSpan(23, 59, 59));
+                    expression = expression.And(t => t.CreateTime <= param.EndTime);
+                }
             }
             return expression;
         }

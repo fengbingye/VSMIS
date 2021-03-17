@@ -71,6 +71,22 @@ namespace YiSha.Service.ScheduleManage
             var expression = LinqExtensions.True<VehicleEntity>();
             if (param != null)
             {
+                if (!param.DriverName.IsEmpty())
+                {
+                    expression = expression.And(t => t.DriverName.Contains(param.DriverName));
+                }
+                if (!param.DriverIdentityNo.IsEmpty())
+                {
+                    expression = expression.And(t => t.DriverIdentityNo.Contains(param.DriverIdentityNo));
+                }
+                if (!param.DriverPhone.IsEmpty())
+                {
+                    expression = expression.And(t => t.DriverPhone.Contains(param.DriverPhone));
+                }
+                if (!param.VehicleNo.IsEmpty())
+                {
+                    expression = expression.And(t => t.VehicleNo.Contains(param.VehicleNo));
+                }
             }
             return expression;
         }
