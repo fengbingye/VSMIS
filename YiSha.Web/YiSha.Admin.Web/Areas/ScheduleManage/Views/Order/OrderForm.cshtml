@@ -5,26 +5,27 @@
 <div class="wrapper animated fadeInRight">
     <form id="form" class="form-horizontal m">
         <div class="form-group">
-            <label class="col-sm-2 control-label ">OrderNo<font class="red"> *</font></label>
+            <label class="col-sm-2 control-label ">销售订单号<font class="red"> *</font></label>
             <div class="col-sm-4">
                 <input id="orderNo" col="OrderNo" type="text" class="form-control" />
             </div>
-            <label class="col-sm-2 control-label ">GoodsType<font class="red"> *</font></label>
-            <div class="col-sm-4">
+            <label class="col-sm-2 control-label  hidden">GoodsType<font class="red"> *</font></label>
+            <div class="col-sm-4 hidden">
                 <input id="goodsType" col="GoodsType" type="text" class="form-control" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label ">TotalQuantity<font class="red"> *</font></label>
-            <div class="col-sm-4">
+            <label class="col-sm-2 control-label hidden">TotalQuantity<font class="red"> *</font></label>
+            <div class="col-sm-4 hidden">
                 <input id="totalQuantity" col="TotalQuantity" type="text" class="form-control" />
             </div>
-            <label class="col-sm-2 control-label ">ShippingDock<font class="red"> *</font></label>
+            <label class="col-sm-2 control-label ">任务类型<font class="red"> *</font></label>
             <div class="col-sm-4">
-                <input id="shippingDock" col="ShippingDock" type="text" class="form-control" />
+                <div id="missonType" col="MissonType"></div>
             </div>
+
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-2 control-label ">UserId<font class="red"> *</font></label>
             <div class="col-sm-4">
                 <input id="userId" col="UserId" type="text" class="form-control" />
@@ -35,16 +36,17 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label ">MissonType<font class="red"> *</font></label>
+            <label class="col-sm-2 control-label ">出库码头<font class="red"> *</font></label>
             <div class="col-sm-4">
-                <input id="missonType" col="MissonType" type="text" class="form-control" />
+                <div id="shippingDock" col="ShippingDock"></div>
             </div>
-            <label class="col-sm-2 control-label ">Destination<font class="red"> *</font></label>
-            <div class="col-sm-4">
+
+            <label class="col-sm-2 control-label hidden ">Destination<font class="red"> *</font></label>
+            <div class="col-sm-4 hidden">
                 <input id="destination" col="Destination" type="text" class="form-control" />
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-2 control-label ">CreateTime<font class="red"> *</font></label>
             <div class="col-sm-4">
                 <input id="createTime" col="CreateTime" type="text" class="form-control" />
@@ -54,7 +56,7 @@
                 <input id="orderStatus" col="OrderStatus" type="text" class="form-control" />
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-2 control-label ">UserName<font class="red"> *</font></label>
             <div class="col-sm-4">
                 <input id="userName" col="UserName" type="text" class="form-control" />
@@ -70,11 +72,27 @@
 <script type="text/javascript">
     var id = ys.request("id");
     $(function () {
+
+        $("#missonType").ysComboBox({
+            data: top.getDataDict("MissonType"),
+            key: "DictKey",
+            value: "DictValue",
+            class: "form-control"
+        });
+        $("#shippingDock").ysComboBox({
+            data: top.getDataDict("ShippingDock"),
+            key: "DictKey",
+            value: "DictValue",
+            class: "form-control"
+        });
+        $("#goodsType").val(2);
         getForm();
 
         $('#form').validate({
             rules: {
-                orderNo: { required: true }
+                orderNo: { required: true },
+                missonType_select: { required: true },
+                shippingDock_select: { required: true }
             }
         });
     });

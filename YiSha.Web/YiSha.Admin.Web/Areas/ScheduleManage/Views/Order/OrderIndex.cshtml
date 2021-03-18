@@ -7,7 +7,7 @@
             <div class="select-list">
                 <ul>
                     <li>
-                        OrderNo：<input id="orderNo" col="OrderNo" type="text" />
+                        订单号：<input id="orderNo" col="OrderNo" type="text" />
                     </li>
                     <li>
                         <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -38,13 +38,31 @@
             columns: [
                 { checkbox: true, visible: true },
                 { field: 'Id', title: 'Id', visible: false },
-                { field: 'OrderNo', title: 'OrderNo' },
-                { field: 'MissonType', title: 'MissonType' },
-                { field: 'GoodsType', title: 'GoodsType' },
-                { field: 'Destination', title: 'Destination' },
-                { field: 'TotalQuantity', title: 'TotalQuantity' },
-                { field: 'CreateTime', title: 'CreateTime' },
-                { field: 'ShippingDock', title: 'ShippingDock' },
+                { field: 'OrderNo', title: '销售订单号' },
+                {
+                    field: 'MissonType', title: '任务类型', formatter: function (value, row, index) {
+                        return top.getDataDictValue('MissonType', value);
+                    }
+                },
+                {
+                    field: 'GoodsType', title: '货物类型', formatter: function (value, row, index) {
+                        return top.getDataDictValue('GoodsType', value);
+                    }
+                },
+                {
+                    field: 'ShippingDock', title: '出货码头', formatter: function (value, row, index) {
+                        return top.getDataDictValue('ShippingDock', value);
+                    }
+                },
+                {
+                    field: 'OrderStatus', title: '订单状态', formatter: function (value, row, index) {
+                        return top.getDataDictValue('OrderStatus', value);
+                    }
+                },
+                { field: 'CreateTime', title: '创建时间' },
+                { field: 'ExecutionTime', title: '执行时间' },
+                { field: 'FinishTime', title: '完成时间' },           
+                                
             ],
             queryParams: function (params) {
                 var pagination = $('#gridTable').ysTable('getPagination', params);
@@ -73,8 +91,8 @@
         ys.openDialog({
             title: id > 0 ? '编辑' : '添加',
             content: '@Url.Content("~/ScheduleManage/Order/OrderForm")' + '?id=' + id,
-            width: '768px',
-            height: '550px',
+            width: '500px',
+            height: '380px',
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
                 iframeWin.saveForm(index);
