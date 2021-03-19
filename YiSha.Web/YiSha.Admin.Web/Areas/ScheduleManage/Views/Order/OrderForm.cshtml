@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_FormWhite.cshtml";
+    OperatorInfo operatorInfo = ViewBag.OperatorInfo;
 }
 
 <div class="wrapper animated fadeInRight">
@@ -14,6 +15,7 @@
                 <input id="goodsType" col="GoodsType" type="text" class="form-control" />
             </div>
         </div>
+
         <div class="form-group">
             <label class="col-sm-2 control-label hidden">总数量<font class="red"> *</font></label>
             <div class="col-sm-4 hidden">
@@ -113,11 +115,12 @@
         }
         else {
             var defaultData = {};
- 
+
             defaultData.GoodsType = 1;
             defaultData.CreateTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
             defaultData.TotalQuantity = 20;
             defaultData.OrderStatus = 1;
+         
 
 
             $('#form').setWebControls(defaultData);

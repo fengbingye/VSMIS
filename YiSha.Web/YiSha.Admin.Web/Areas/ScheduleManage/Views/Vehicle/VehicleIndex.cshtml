@@ -79,10 +79,10 @@
             }
         }
         ys.openDialog({
-            title: id > 0 ? '编辑' : '添加',
+            title: id > 0 ? '编辑' : '车辆签到',
             content: '@Url.Content("~/ScheduleManage/Vehicle/VehicleForm")' + '?id=' + id,
             width: '768px',
-            height: '550px',
+            height: '500px',
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
                 iframeWin.saveForm(index);
