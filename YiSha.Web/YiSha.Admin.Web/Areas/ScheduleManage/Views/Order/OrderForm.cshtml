@@ -1,4 +1,5 @@
-﻿@{
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@{
     Layout = "~/Views/Shared/_FormWhite.cshtml";
     OperatorInfo operatorInfo = ViewBag.OperatorInfo;
 }
@@ -6,7 +7,7 @@
 <div class="wrapper animated fadeInRight">
     <form id="form" class="form-horizontal m">
         <div class="form-group">
-            <label class="col-sm-2 control-label ">销售订单号<font class="red"> *</font></label>
+            <label class="col-sm-2 control-label ">销售订单号:<font class="red"> *</font></label>
             <div class="col-sm-4">
                 <input id="orderNo" col="OrderNo" type="text" class="form-control" />
             </div>
@@ -21,7 +22,7 @@
             <div class="col-sm-4 hidden">
                 <input id="totalQuantity" col="TotalQuantity" type="text" class="form-control" />
             </div>
-            <label class="col-sm-2 control-label ">任务类型<font class="red"> *</font></label>
+            <label class="col-sm-2 control-label ">任务类型:<font class="red"> *</font></label>
             <div class="col-sm-4">
                 <div id="missonType" col="MissonType"></div>
             </div>
@@ -38,7 +39,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label ">出库码头<font class="red"> *</font></label>
+            <label class="col-sm-2 control-label ">出库码头:<font class="red"> *</font></label>
             <div class="col-sm-4">
                 <div id="shippingDock" col="ShippingDock"></div>
             </div>
@@ -120,7 +121,6 @@
             defaultData.CreateTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
             defaultData.TotalQuantity = 20;
             defaultData.OrderStatus = 1;
-         
 
 
             $('#form').setWebControls(defaultData);
