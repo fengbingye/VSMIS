@@ -5,9 +5,16 @@
     <div class="row">
         <div id="searchDiv" class="col-sm-12 search-collapse">
             <div class="select-list">
-                <ul>
-                    <li>
+                <ul >
+                    <li >
                         订单号：<input id="orderNo" col="OrderNo" type="text" />
+                    </li>
+                    <li>
+                        任务类型：<span id="missonType" col="MissonType" ></span>
+                    </li>
+
+                    <li>
+                        货物类型：<span id="goodsType" col="GoodsType"></span>
                     </li>
                     <li>
                         <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -29,6 +36,20 @@
 <script type="text/javascript">
     $(function () {
         initGrid();
+        $("#missonType").ysComboBox({
+            data: top.getDataDict("MissonType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+           
+        });
+        $("#goodsType").ysComboBox({
+            data: top.getDataDict("GoodsType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
     });
 
     function initGrid() {

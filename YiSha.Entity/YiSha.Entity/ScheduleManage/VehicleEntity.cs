@@ -110,7 +110,7 @@ namespace YiSha.Entity.ScheduleManage
         /// 当前状态（01：签到 02：装货中 03：结束）
         /// </summary>
         /// <returns></returns>
-        public int? MissionStatus { get; set; }
+        public int? Status { get; set; }
         /// <summary>
         /// 操作员Id
         /// </summary>

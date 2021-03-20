@@ -79,9 +79,9 @@
         </div>
 
         <div class="form-group hidden">
-            <label class="col-sm-2 control-label ">任务状态<font class="red"> *</font></label>
+            <label class="col-sm-2 control-label ">状态<font class="red"> *</font></label>
             <div class="col-sm-4">
-                <input id="missionStatus" col="MissionStatus" type="text" class="form-control" />
+                <input id="status" col="Status" type="text" class="form-control" />
             </div>
             <label class="col-sm-2 control-label ">签到时间<font class="red"> *</font></label>
             <div class="col-sm-4">
@@ -168,6 +168,7 @@
         if (goods_sel == 1) {
             //$('#missonType').hide();
             //$('#mission').hide();
+            $('#missonType').ysComboBox('setValue', 1)
             $('#goodsName').hide();
             $('#goods').hide();
             $('#model').hide();
@@ -265,7 +266,7 @@
         else {
             var defaultData = {};
             defaultData.CheckTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
-            defaultData.MissionStatus = 1;
+            defaultData.Status = 1;
             $('#form').setWebControls(defaultData);
         }
     }
