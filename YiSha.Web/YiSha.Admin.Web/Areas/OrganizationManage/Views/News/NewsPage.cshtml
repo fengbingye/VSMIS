@@ -1,21 +1,13 @@
 ﻿@{
     Layout = "~/Views/Shared/_Index.cshtml";
-    OperatorInfo operatorInfo = ViewBag.OperatorInfo;
- }
+}
 <div class="container-div">
     <div class="row">
         <div id="searchDiv" class="col-sm-12 search-collapse">
             <div class="select-list">
-                <ul >
-                    <li >
-                        订单号：<input id="orderNo" col="OrderNo" type="text" />
-                    </li>
+                <ul>
                     <li>
-                        任务类型：<span id="missonType" col="MissonType" ></span>
-                    </li>
-
-                    <li>
-                        货物类型：<span id="goodsType" col="GoodsType"></span>
+                        文章标题：<input id="newsTitle" col="NewsTitle" type="text" />
                     </li>
                     <li>
                         <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -23,7 +15,7 @@
                 </ul>
             </div>
         </div>
-        <div class="btn-group-sm hidden-xs" id="toolbar">
+        <div class="btn-group-sm" id="toolbar">
             <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
             <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
             <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
@@ -37,54 +29,36 @@
 <script type="text/javascript">
     $(function () {
         initGrid();
-        $("#missonType").ysComboBox({
-            data: top.getDataDict("MissonType"),
-            key: "DictKey",
-            value: "DictValue",
-            maxHeight: "160px"
-           
-        });
-        $("#goodsType").ysComboBox({
-            data: top.getDataDict("GoodsType"),
-            key: "DictKey",
-            value: "DictValue",
-            maxHeight: "160px"
-
-        });
     });
 
     function initGrid() {
-        var queryUrl = '@Url.Content("~/ScheduleManage/Order/GetPageListJson")';
+        var queryUrl = '@Url.Content("~/OrganizationManage/News/GetPageListJson")';
         $('#gridTable').ysTable({
             url: queryUrl,
+            sortName: 'NewsSort',
+            sortOrder: 'Desc',
             columns: [
                 { checkbox: true, visible: true },
                 { field: 'Id', title: 'Id', visible: false },
-                { field: 'OrderNo', title: '销售订单号' },
+                { field: 'NewsTitle', title: '文章标题' },
                 {
-                    field: 'MissonType', title: '任务类型', formatter: function (value, row, index) {
-                        return top.getDataDictValue('MissonType', value);
+                    field: 'NewsType', title: '文章类型', formatter: function (value, row, index) {
+                        return top.getDataDictValue('NewsType', value);
                     }
                 },
+                { field: 'NewsAuthor', title: '作者' },
+                { field: 'NewsSort', title: '排序' },
+                { field: 'NewsDate', title: '发布时间' },
+                { field: 'ViewTimes', title: '阅读量' },
                 {
-                    field: 'GoodsType', title: '货物类型', formatter: function (value, row, index) {
-                        return top.getDataDictValue('GoodsType', value);
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-warning btn-xs" href="#" onclick="showDetailForm(\'' + row.Id + '\')"><i class="fa fa-search"></i>详细</a>');
+                        return actions.join('');
                     }
-                },
-                {
-                    field: 'ShippingDock', title: '出货码头', formatter: function (value, row, index) {
-                        return top.getDataDictValue('ShippingDock', value);
-                    }
-                },
-                {
-                    field: 'OrderStatus', title: '订单状态', formatter: function (value, row, index) {
-                        return top.getDataDictValue('OrderStatus', value);
-                    }
-                },
-                { field: 'CreateTime', title: '创建时间' },
-                { field: 'ExecutionTime', title: '执行时间' },
-                { field: 'FinishTime', title: '完成时间' },           
-                                
+                }
             ],
             queryParams: function (params) {
                 var pagination = $('#gridTable').ysTable('getPagination', params);
@@ -102,7 +76,7 @@
     function showSaveForm(bAdd) {
         var id = 0;
         if (!bAdd) {
-            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            var selectedRow = $("#gridTable").bootstrapTable("getSelections");
             if (!ys.checkRowEdit(selectedRow)) {
                 return;
             }
@@ -111,10 +85,8 @@
             }
         }
         ys.openDialog({
-            title: id > 0 ? '编辑' : '新增',
-            content: '@Url.Content("~/ScheduleManage/Order/OrderForm")' + '?id=' + id,
-            width: '500px',
-            height: '380px',
+            title: id > 0 ? "编辑文章" : "添加文章",
+            content: '@Url.Content("~/OrganizationManage/News/NewsForm")' + '?id=' + id,
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
                 iframeWin.saveForm(index);
@@ -123,13 +95,13 @@
     }
 
     function deleteForm() {
-        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        var selectedRow = $("#gridTable").bootstrapTable("getSelections");
         if (ys.checkRowDelete(selectedRow)) {
-            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
+            ys.confirm("确认要删除选中的" + selectedRow.length + "条数据吗？", function () {
                 var ids = ys.getIds(selectedRow);
                 ys.ajax({
-                    url: '@Url.Content("~/ScheduleManage/Order/DeleteFormJson")' + '?ids=' + ids,
-                    type: 'post',
+                    url: '@Url.Content("~/OrganizationManage/News/DeleteFormJson")' + '?ids=' + ids,
+                    type: "post",
                     success: function (obj) {
                         if (obj.Tag == 1) {
                             ys.msgSuccess(obj.Message);

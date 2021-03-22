@@ -33,6 +33,7 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
             ViewBag.OperatorInfo = await Operator.Instance.Current();
             return View();
         }
+
         #endregion
 
         #region 获取数据

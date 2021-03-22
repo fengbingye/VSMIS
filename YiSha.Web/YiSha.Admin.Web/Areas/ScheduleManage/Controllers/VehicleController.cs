@@ -12,6 +12,7 @@ using YiSha.Admin.Web.Controllers;
 using YiSha.Entity.ScheduleManage;
 using YiSha.Business.ScheduleManage;
 using YiSha.Model.Param.ScheduleManage;
+using YiSha.Web.Code;
 
 namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
 {
@@ -27,13 +28,17 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
 
         #region 视图功能
         [AuthorizeFilter("schedule:vehicle:view")]
+
         public ActionResult VehicleIndex()
-        {
-            return View();
+            {
+  
+                return View();
         }
 
-        public ActionResult VehicleForm()
+        public async Task<IActionResult> VehicleForm()
         {
+            OperatorInfo operatorInfo = await Operator.Instance.Current();
+            ViewBag.OperatorInfo = operatorInfo;
             return View();
         }
         #endregion

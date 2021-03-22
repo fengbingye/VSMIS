@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_FormWhite.cshtml";
+    OperatorInfo operatorInfo = ViewBag.OperatorInfo;
 }
 
 <div class="wrapper animated fadeInRight">
@@ -115,6 +116,19 @@
 <script type="text/javascript">
     var goods_sel,mission_sel,den_del;
     var id = ys.request("id");
+    $('#hr').hide();
+    $("#destination").hide();
+    $("#destina").hide();
+    $('#orderNo').hide();
+    $('#order').hide();
+    $('#cabinetNo').hide();
+    $('#cabinet').hide();
+    $('#bill').hide();
+    $('#billNumber').hide();
+    $('#goodsName').hide();
+    $('#goods').hide();
+    $('#model').hide();
+    $('#goodsModel').hide();
     $(function () {
         $("#goodsType").ysComboBox({
             data: top.getDataDict("GoodsType"),
@@ -161,25 +175,7 @@
             }
         });
     });
-    $("#goodsType").change(function () {
 
-         goods_sel = $("#goodsType option:checked").val();
-
-        if (goods_sel == 1) {
-            //$('#missonType').hide();
-            //$('#mission').hide();
-            $('#missonType').ysComboBox('setValue', 1)
-            $('#goodsName').hide();
-            $('#goods').hide();
-            $('#model').hide();
-            $('#goodsModel').hide();
-        }
-        else {
-            $('#missonType').show();
-            $('#mission').show();
-        }
-
-    });
     $("#missonType").change(function () {
 
         mission_sel = $("#missonType option:checked").val();
@@ -193,6 +189,10 @@
             $('#cabinet').hide();
             $('#bill').hide();
             $('#billNumber').hide();
+            $("#destination").show();
+            $("#destina").show();
+            $('#orderNo').show();
+            $('#order').show();
         }
         if ((mission_sel == 1)&& (goods_sel == 2))
         {
@@ -227,6 +227,28 @@
             $('#goodsModel').show();
 
         }
+    });
+    $("#goodsType").change(function () {
+
+        goods_sel = $("#goodsType option:checked").val();
+
+        if (goods_sel == 1) {
+            //$('#missonType').hide();
+            //$('#mission').hide();
+
+            $('#missonType').ysComboBox('setValue', 1)
+            $('#goodsName').hide();
+            $('#goods').hide();
+            $('#model').hide();
+            $('#goodsModel').hide();
+        }
+        else {
+            $('#missonType').show();
+            $('#mission').show();
+            $('#SubstringSubstringSubstringorderNo').hide();
+            $('#order').hide();
+        }
+
     });
     $("#destination").change(function () {
 
@@ -267,6 +289,9 @@
             var defaultData = {};
             defaultData.CheckTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
             defaultData.Status = 1;
+            defaultData.UserId = @operatorInfo.UserId;
+            defaultData.DeptId =  @operatorInfo.DepartmentId;
+
             $('#form').setWebControls(defaultData);
         }
     }
