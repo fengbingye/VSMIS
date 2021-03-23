@@ -51,7 +51,7 @@
             </div>
             <label class="col-sm-2 control-label " id="order">销售订单号<font class="red"> *</font></label>
             <div class="col-sm-4">
-                <input id="orderNo" col="OrderNo" type="text" class="form-control" />
+                <input id="orderNo" col="OrderNo" type="text" class="form-control " />
             </div>
         </div>
         <hr class="simple" id="hr" color="#6f5499" />
@@ -116,20 +116,23 @@
 <script type="text/javascript">
     var goods_sel,mission_sel,den_del;
     var id = ys.request("id");
-    $('#hr').hide();
-    $("#destination").hide();
-    $("#destina").hide();
-    $('#orderNo').hide();
-    $('#order').hide();
-    $('#cabinetNo').hide();
-    $('#cabinet').hide();
-    $('#bill').hide();
-    $('#billNumber').hide();
-    $('#goodsName').hide();
-    $('#goods').hide();
-    $('#model').hide();
-    $('#goodsModel').hide();
+
     $(function () {
+
+        $('#hr').hide();
+        $("#destination").hide();
+        $("#destina").hide();
+        $('#orderNo').hide();
+        $('#order').hide();
+        $("#orderNo").css('display', 'none')
+        $('#cabinetNo').hide();
+        $('#cabinet').hide();
+        $('#bill').hide();
+        $('#billNumber').hide();
+        $('#goodsName').hide();
+        $('#goods').hide();
+        $('#model').hide();
+        $('#goodsModel').hide();
         $("#goodsType").ysComboBox({
             data: top.getDataDict("GoodsType"),
             key: "DictKey",
@@ -176,9 +179,35 @@
         });
     });
 
+    $("#goodsType").change(function () {
+
+        goods_sel = $("#goodsType option:checked").val();
+
+        if (goods_sel == 1) {
+
+            $('#missonType').ysComboBox('setValue', 1)
+            $('#goodsName').hide();
+            $('#goods').hide();
+            $('#model').hide();
+            $('#goodsModel').hide();
+        }
+        else {
+    
+            $('#missonType').show();
+            $('#mission').show();
+            $('#orderNo').hide();
+            $('#order').hide();
+        }
+
+    });
+
     $("#missonType").change(function () {
 
         mission_sel = $("#missonType option:checked").val();
+        if (goods_sel == 1) {
+            $('#orderNo').hide();
+            $('#order').hide();
+        }
         if ((mission_sel == 1)&& (goods_sel == 1))
         {
             $('#goodsName').hide();
@@ -228,28 +257,7 @@
 
         }
     });
-    $("#goodsType").change(function () {
 
-        goods_sel = $("#goodsType option:checked").val();
-
-        if (goods_sel == 1) {
-            //$('#missonType').hide();
-            //$('#mission').hide();
-
-            $('#missonType').ysComboBox('setValue', 1)
-            $('#goodsName').hide();
-            $('#goods').hide();
-            $('#model').hide();
-            $('#goodsModel').hide();
-        }
-        else {
-            $('#missonType').show();
-            $('#mission').show();
-            $('#SubstringSubstringSubstringorderNo').hide();
-            $('#order').hide();
-        }
-
-    });
     $("#destination").change(function () {
 
         den_del = $("#destination option:checked").val();
@@ -263,8 +271,7 @@
             $('#billNumber').show();
         }
         else {
-            $('#orderNo').show();
-            $('#order').show();
+
             $('#cabinetNo').hide();
             $('#cabinet').hide();
             $('#bill').hide();

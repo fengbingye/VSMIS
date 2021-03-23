@@ -12,6 +12,7 @@ using YiSha.Admin.Web.Controllers;
 using YiSha.Entity.ScheduleManage;
 using YiSha.Business.ScheduleManage;
 using YiSha.Model.Param.ScheduleManage;
+using YiSha.Web.Code;
 
 namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
 {
@@ -32,8 +33,11 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
             return View();
         }
 
-        public ActionResult OrderForm()
+        public async Task<IActionResult> OrderForm()
         {
+            OperatorInfo operatorInfo = await Operator.Instance.Current();
+            ViewBag.OperatorInfo = operatorInfo;
+            
             return View();
         }
         #endregion

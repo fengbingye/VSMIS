@@ -116,11 +116,12 @@
         }
         else {
             var defaultData = {};
-
+            //货物类型 ：原材料
             defaultData.GoodsType = 2;
             defaultData.CreateTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
-            defaultData.TotalQuantity = 20;
             defaultData.OrderStatus = 1;
+            defaultData.UserId = @operatorInfo.UserId;
+            defaultData.DeptId =  @operatorInfo.DepartmentId;
 
 
             $('#form').setWebControls(defaultData);
