@@ -9,6 +9,7 @@
     <Product>YiShaAdmin</Product>
     <Copyright>YiShaAdmin</Copyright>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <UserSecretsId>d72da302-f1a6-404d-9d1e-6b6a8a05e1a6</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
