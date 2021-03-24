@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_FormWhite.cshtml";
-    OperatorInfo operatorInfo = ViewBag.OperatorInfo;
+
 }
 
 <div class="wrapper animated fadeInRight">
@@ -296,8 +296,6 @@
             var defaultData = {};
             defaultData.CheckTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
             defaultData.Status = 1;
-            defaultData.UserId = @operatorInfo.UserId;
-            defaultData.DeptId =  @operatorInfo.DepartmentId;
 
             $('#form').setWebControls(defaultData);
         }

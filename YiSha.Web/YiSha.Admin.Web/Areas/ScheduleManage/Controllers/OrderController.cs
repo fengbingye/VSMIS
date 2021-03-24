@@ -72,6 +72,9 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
         [AuthorizeFilter("schedule:order:add,schedule:order:edit")]
         public async Task<ActionResult> SaveFormJson(OrderEntity entity)
         {
+            OperatorInfo operatorInfo = await Operator.Instance.Current();
+            entity.DeptId = operatorInfo.DepartmentId;
+            entity.UserId = operatorInfo.UserId;
             TData<string> obj = await orderBLL.SaveForm(entity);
             return Json(obj);
         }

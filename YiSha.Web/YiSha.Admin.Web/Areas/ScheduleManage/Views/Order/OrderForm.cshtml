@@ -1,7 +1,6 @@
 ﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
 @{
     Layout = "~/Views/Shared/_FormWhite.cshtml";
-    OperatorInfo operatorInfo = ViewBag.OperatorInfo;
 }
 
 <div class="wrapper animated fadeInRight">
@@ -127,9 +126,6 @@
             //defaultData.GoodsType = 2;
             defaultData.CreateTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
             defaultData.OrderStatus = 1;
-            defaultData.UserId = @operatorInfo.UserId;
-            defaultData.DeptId =  @operatorInfo.DepartmentId;
-            alert(defaultData.UserId );
 
 
             $('#form').setWebControls(defaultData);
