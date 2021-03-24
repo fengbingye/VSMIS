@@ -8,6 +8,7 @@ using YiSha.Util.Model;
 using YiSha.Entity.ScheduleManage;
 using YiSha.Model.Param.ScheduleManage;
 using YiSha.Service.ScheduleManage;
+using YiSha.Web.Code;
 
 namespace YiSha.Business.ScheduleManage
 {
@@ -34,6 +35,11 @@ namespace YiSha.Business.ScheduleManage
         {
             TData<List<OrderEntity>> obj = new TData<List<OrderEntity>>();
             obj.Data = await orderService.GetPageList(param, pagination);
+            OperatorInfo operatorInfo = await Operator.Instance.Current();
+            if (operatorInfo.IsSystem != 1)
+            {
+                obj.Data = obj.Data.Where(p => operatorInfo.DepartmentId.Value.Equals(p.DeptId.Value)).ToList();
+            }
             obj.Total = pagination.TotalCount;
             obj.Tag = 1;
             return obj;
