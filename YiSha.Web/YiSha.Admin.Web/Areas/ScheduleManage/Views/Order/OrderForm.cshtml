@@ -11,9 +11,9 @@
             <div class="col-sm-4">
                 <input id="orderNo" col="OrderNo" type="text" class="form-control" />
             </div>
-            <label class="col-sm-2 control-label  hidden">货物类型<font class="red"> *</font></label>
-            <div class="col-sm-4 hidden">
-                <input id="goodsType" col="GoodsType" type="text" class="form-control" />
+            <label class="col-sm-2 control-label  ">货物类型<font class="red"> *</font></label>
+            <div class="col-sm-4 ">
+                <div id="goodsType" col="GoodsType"></div>
             </div>
         </div>
 
@@ -84,6 +84,13 @@
             maxHeight: "160px",
             class: "form-control"
         });
+        $("#goodsType").ysComboBox({
+            data: top.getDataDict("GoodsType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px",
+            class: "form-control"
+        });
         $("#shippingDock").ysComboBox({
             data: top.getDataDict("ShippingDock"),
             key: "DictKey",
@@ -117,7 +124,7 @@
         else {
             var defaultData = {};
             //货物类型 ：原材料
-            defaultData.GoodsType = 1;
+            //defaultData.GoodsType = 2;
             defaultData.CreateTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
             defaultData.OrderStatus = 1;
             defaultData.UserId = @operatorInfo.UserId;

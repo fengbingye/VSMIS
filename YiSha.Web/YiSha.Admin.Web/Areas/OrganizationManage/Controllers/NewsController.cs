@@ -33,11 +33,13 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
             ViewBag.OperatorInfo = await Operator.Instance.Current();
             return View();
         }
-        public async Task<IActionResult> NewsPage()
+        [AuthorizeFilter]
+        [HttpGet]
+        public IActionResult NewsPage()
         {
-            ViewBag.OperatorInfo = await Operator.Instance.Current();
             return View();
         }
+        [HttpGet]
         public IActionResult NewsDetail()
         {
             return View();

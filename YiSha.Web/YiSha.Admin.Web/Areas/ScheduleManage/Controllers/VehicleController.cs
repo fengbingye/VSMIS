@@ -28,11 +28,9 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
 
         #region 视图功能
         [AuthorizeFilter("schedule:vehicle:view")]
-
         public ActionResult VehicleIndex()
             {
-  
-                return View();
+               return View();
         }
 
         public async Task<IActionResult> VehicleForm()
