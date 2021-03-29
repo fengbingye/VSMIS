@@ -1,0 +1,126 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+
+
+<div class="container-div">
+    <div class="row">
+        <div class="ui-layout col-sm-2" >
+
+            <div class="col-sm-12 select-table table-striped">
+                 <table id="OrdergridTable" data-mobile-responsive="true"></table>
+            </div>
+        </div>
+
+        <div class="ui-layout col-sm-10">
+
+            <div id="searchDiv" class="col-sm-12 search-collapse">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            OrderNo：<input id="orderNo" col="OrderNo" type="text" />
+                        </li>
+                        <li>
+                            <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="btn-group-sm hidden-xs" id="toolbar">
+                <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 订单与车牌匹配</a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="gridTable" data-mobile-responsive="true"></table>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        initGrid();
+        initOrderGrid();
+
+    });
+
+  
+    function initOrderGrid() {
+        var queryUrl = '@Url.Content("~/ScheduleManage/plan/GetOrderPageListJson")';
+        $('#OrdergridTable').ysTable({
+            url: queryUrl,
+            showToggle: false,
+            showRefresh: false,
+            showColumns: false,
+            pagination:false,
+            columns: [
+                { radio: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+                { field: 'OrderNo', title: '订单号' },
+                { field: 'OrderStatus', title: '订单状态' },
+            ],
+            queryParams: function (params) {
+                var pagination = $('#OrdergridTable').ysTable('getPagination', params);
+                var queryOrderString = $('#searchDiv').getWebControls(pagination);
+                return queryOrderString;
+            }
+        });
+    }
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/ScheduleManage/plan/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            columns: [
+                { checkbox: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+                { field: 'CheckTime', title: '签到时间' },
+                { field: 'DriverName', title: '司机姓名' },
+                { field: 'VehicleNo', title: '车牌号码' },
+                { field: 'OrderNo', title: '订单号码' },
+                { field: 'Status', title: '车辆状态' },
+                { field: 'MissonType', title: '任务类型' },
+                { field: 'GoodsType', title: '货物类型' },
+                { field: 'GoodsName', title: '货物名称' },
+                { field: 'GoodsModel', title: '货物型号' },
+                { field: 'Destination', title: '目的地' },
+
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showSaveForm(bAdd) {
+        var id = 0;
+        if (!bAdd) {
+            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            if (!ys.checkRowEdit(selectedRow)) {
+                return;
+            }
+            else {
+                id = selectedRow[0].Id;
+            }
+        }
+        ys.openDialog({
+            title: id > 0 ? '编辑' : '添加',
+            content: '@Url.Content("~/ScheduleManage/plan/planForm")' + '?id=' + id,
+            width: '768px',
+            height: '550px',
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+
+</script>

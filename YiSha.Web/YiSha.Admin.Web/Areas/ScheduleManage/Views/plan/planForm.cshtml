@@ -1,0 +1,91 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">VehicleNo<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="vehicleNo" col="VehicleNo" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">CheckTime<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="checkTime" col="CheckTime" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">ShippingDock<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="shippingDock" col="ShippingDock" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">DriverName<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="driverName" col="DriverName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">OrderNo<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="orderNo" col="OrderNo" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">Status<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="status" col="Status" type="text" class="form-control" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    $(function () {
+        getForm();
+
+        $('#form').validate({
+            rules: {
+                vehicleNo: { required: true }
+            }
+        });
+    });
+
+    function getForm() {
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/ScheduleManage/plan/GetFormJson")' + '?id=' + id,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        $('#form').setWebControls(obj.Data);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/ScheduleManage/plan/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+
