@@ -32,11 +32,15 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
             {
                return View();
         }
-
+        public ActionResult CallVehicle()
+        {
+            return View();
+        }
         public async Task<IActionResult> VehicleForm()
         {
             OperatorInfo operatorInfo = await Operator.Instance.Current();
             ViewBag.OperatorInfo = operatorInfo;
+            
             return View();
         }
         #endregion

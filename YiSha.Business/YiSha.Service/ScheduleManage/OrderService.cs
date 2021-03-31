@@ -91,6 +91,10 @@ namespace YiSha.Service.ScheduleManage
                 {
                     expression = expression.And(t => t.ShippingDock == param.ShippingDock);
                 }
+                if (param.OrderStatus > -1)
+                {
+                    expression = expression.And(t => t.OrderStatus == param.OrderStatus);
+                }
                 if (!string.IsNullOrEmpty(param.StartTime.ParseToString()))
                 {
                     expression = expression.And(t => t.CreateTime >= param.StartTime);

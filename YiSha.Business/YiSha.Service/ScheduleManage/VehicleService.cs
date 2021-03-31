@@ -87,6 +87,35 @@ namespace YiSha.Service.ScheduleManage
                 {
                     expression = expression.And(t => t.VehicleNo.Contains(param.VehicleNo));
                 }
+                if (!param.OrderNo.IsEmpty())
+                {
+                    expression = expression.And(t => t.OrderNo.Contains(param.OrderNo));
+                }
+                if (param.MissonType > -1)
+                {
+                    expression = expression.And(t => t.MissonType == param.MissonType);
+                }
+                if (param.GoodsType > -1)
+                {
+                    expression = expression.And(t => t.GoodsType == param.GoodsType);
+                }
+                if (param.Status > -1)
+                {
+                    expression = expression.And(t => t.Status == param.Status);
+                }
+              
+                if (param.ShippingDock > -1)
+                {
+                    expression = expression.And(t => t.ShippingDock == param.ShippingDock);
+                }
+                if (!string.IsNullOrEmpty(param.StartStatus.ParseToString()))
+                {
+                    expression = expression.And(t => t.Status >= param.StartStatus);
+                }
+                if (!string.IsNullOrEmpty(param.EndStatus.ParseToString()))
+                {
+                    expression = expression.And(t => t.Status <= param.EndStatus);
+                }
             }
             return expression;
         }

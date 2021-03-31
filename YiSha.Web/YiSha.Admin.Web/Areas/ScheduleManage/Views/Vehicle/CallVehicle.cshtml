@@ -8,13 +8,13 @@
             <div class="select-list">
                 <ul>
                     <li>
-                        司机姓名：<input id="driverName" col="DriverName" type="text" />
+                        出货码头：<span id="shippingDock" col="ShippingDock"></span>
                     </li>
-                    <li>
-                        联系电话：<input id="driverPhone" col="DriverPhone" type="text" />
+                    <li class="hidden">
+                        车辆状态：<span id="startStatus" col="StartStatus"></span>
                     </li>
-                    <li>
-                        车牌号码：<input id="vehicleNo" col="VehicleNo" type="text" />
+                    <li class="hidden">
+                        车辆状态：<span id="endStatus" col="EndStatus"></span>
                     </li>
                     <li>
                         <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -23,9 +23,9 @@
             </div>
         </div>
         <div class="btn-group-sm " id="toolbar">
-            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
-            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
-            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+            <a id="btnEdit" class="btn btn-success " onclick="finishForm(1)"><i class="fa fa-plus"></i> 车辆呼叫</a>
+            <a id="btnEdit" class="btn btn-primary " onclick="finishForm(2)"><i class="fa fa-edit"></i> 车辆完成</a>
+            <a id="btnEdit" class="btn btn-danger " onclick="finishForm(3)"><i class="fa fa-remove"></i> 车辆取消</a>
         </div>
         <div class="col-sm-12 select-table table-striped">
             <table id="gridTable" data-mobile-responsive="true"></table>
@@ -35,6 +35,13 @@
 
 <script type="text/javascript">
     $(function () {
+        $("#shippingDock").ysComboBox({
+            data: top.getDataDict("ShippingDock"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
         initGrid();
     });
 
@@ -42,22 +49,24 @@
         var queryUrl = '@Url.Content("~/ScheduleManage/Vehicle/GetPageListJson")';
         $('#gridTable').ysTable({
             url: queryUrl,
+            sortName: 'CheckTime',
+            sortOrder:'asc',
             columns: [
-                { checkbox: true, visible: true },
+                { radio: true, visible: true },
                 { field: 'Id', title: 'Id', visible: false },
-                { field: 'DriverName', title: '司机姓名' },
-                { field: 'DriverIdentityNo', title: '身份证号码' },
-                { field: 'DriverPhone', title: '联系电话' },
-                { field: 'VehicleNo', title: '车牌号码' },
                 { field: 'CheckTime', title: '签到时间' },
+                { field: 'OrderNo', title: '订单号码' },
+                { field: 'VehicleNo', title: '车牌号码' },
+                {
+                    field: 'Status', title: '车辆状态', formatter: function (value, row, index) {
+                        return top.getDataDictValue('VehicleStatus', value);
+                    }
+                },
+                { field: 'DriverName', title: '司机姓名' },
+                { field: 'DriverPhone', title: '联系电话' },
                 {
                     field: 'MissonType', title: '任务类型', formatter: function (value, row, index) {
                         return top.getDataDictValue('MissonType', value);
-                    }
-                },
-                {
-                    field: 'GoodsType', title: '货物类型', formatter: function (value, row, index) {
-                        return top.getDataDictValue('GoodsType', value);
                     }
                 },
                 {
@@ -69,6 +78,9 @@
             queryParams: function (params) {
                 var pagination = $('#gridTable').ysTable('getPagination', params);
                 var queryString = $('#searchDiv').getWebControls(pagination);
+                //只显示车辆状态为匹配和装货中
+                queryString.StartStatus = 2;
+                queryString.EndStatus = 3;
                 return queryString;
             }
         });
@@ -78,38 +90,28 @@
         $('#gridTable').ysTable('search');
         resetToolbarStatus();
     }
-
-    function showSaveForm(bAdd) {
-        var id = 0;
-        if (!bAdd) {
-            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
-            if (!ys.checkRowEdit(selectedRow)) {
-                return;
-            }
-            else {
-                id = selectedRow[0].Id;
-            }
-        }
-        ys.openDialog({
-            title: id > 0 ? '编辑' : '车辆签到',
-            content: '@Url.Content("~/ScheduleManage/Vehicle/VehicleForm")' + '?id=' + id,
-            width: '768px',
-            height: '400px',
-            callback: function (index, layero) {
-                var iframeWin = window[layero.find('iframe')[0]['name']];
-                iframeWin.saveForm(index);
-            }
-        });
-    }
-
-    function deleteForm() {
+    function finishForm(attr) {
         var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (attr == 3) {
+            Tips = ' 取消车辆排队任务吗？'
+            selectedRow[0].Status = 5;
+        }
+        if (attr == 2) {
+            Tips = ' 装卸货任务已经完成吗？'
+            selectedRow[0].Status = 4;
+        }
+        if (attr == 1) {
+            Tips = ' 呼叫该车辆开始装卸货吗？'
+            selectedRow[0].Status = 3;
+        }
         if (ys.checkRowDelete(selectedRow)) {
-            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
-                var ids = ys.getIds(selectedRow);
+            ys.confirm(selectedRow[0].VehicleNo + Tips, function () {
+                //更新车辆表数据
+                var postData = selectedRow[0];
                 ys.ajax({
-                    url: '@Url.Content("~/ScheduleManage/Vehicle/DeleteFormJson")' + '?ids=' + ids,
+                    url: '@Url.Content("~/ScheduleManage/Plan/SaveFormJson")',
                     type: 'post',
+                    data: postData,
                     success: function (obj) {
                         if (obj.Tag == 1) {
                             ys.msgSuccess(obj.Message);
@@ -123,4 +125,5 @@
             });
         }
     }
+
 </script>

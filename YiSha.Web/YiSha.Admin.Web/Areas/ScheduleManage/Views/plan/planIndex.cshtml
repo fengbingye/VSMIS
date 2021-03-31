@@ -18,8 +18,23 @@
                 <div class="select-list">
                     <ul>
                         <li>
-                            OrderNo：<input id="orderNo" col="OrderNo" type="text" />
+                            订单号码：<input id="orderNo" col="OrderNo" type="text" />
                         </li>
+                        <li>
+                            任务类型：<span id="missonType" col="MissonType"></span>
+                        </li>
+
+                        <li>
+                            货物类型：<span id="goodsType" col="GoodsType"></span>
+                        </li>
+                        <li >
+                            车辆状态：<span id="status" col="Status"></span>
+                        </li>
+                        <li class="hidden">
+                            订单状态：<span id="orderStatus" col="OrderStatus"></span>
+                        </li>
+
+
                         <li>
                             <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                         </li>
@@ -27,7 +42,7 @@
                 </div>
             </div>
             <div class="btn-group-sm hidden-xs" id="toolbar">
-                <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 订单与车牌匹配</a>
+                <a id="btnEdit" class="btn btn-primary disabled" onclick="planSaveForm(false)"><i class="fa fa-edit"></i> 订单与车辆匹配</a>
             </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="gridTable" data-mobile-responsive="true"></table>
@@ -40,12 +55,34 @@
 
 <script type="text/javascript">
     $(function () {
-        initGrid();
+        $("#missonType").ysComboBox({
+            data: top.getDataDict("MissonType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+        $("#goodsType").ysComboBox({
+            data: top.getDataDict("GoodsType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+        $("#status").ysComboBox({
+            data: top.getDataDict("VehicleStatus"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
         initOrderGrid();
+        initGrid();
+
 
     });
 
-  
+
     function initOrderGrid() {
         var queryUrl = '@Url.Content("~/ScheduleManage/plan/GetOrderPageListJson")';
         $('#OrdergridTable').ysTable({
@@ -58,12 +95,18 @@
                 { radio: true, visible: true },
                 { field: 'Id', title: 'Id', visible: false },
                 { field: 'OrderNo', title: '订单号' },
-                { field: 'OrderStatus', title: '订单状态' },
+                {
+                    field: 'OrderStatus', title: '订单状态', formatter: function (value, row, index) {
+                        return top.getDataDictValue('OrderStatus', value);
+                    }
+                },
             ],
             queryParams: function (params) {
                 var pagination = $('#OrdergridTable').ysTable('getPagination', params);
-                var queryOrderString = $('#searchDiv').getWebControls(pagination);
-                return queryOrderString;
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                //只显示新订单
+                queryString.OrderStatus = 1;
+                return queryString;
             }
         });
     }
@@ -79,47 +122,83 @@
                 { field: 'DriverName', title: '司机姓名' },
                 { field: 'VehicleNo', title: '车牌号码' },
                 { field: 'OrderNo', title: '订单号码' },
-                { field: 'Status', title: '车辆状态' },
-                { field: 'MissonType', title: '任务类型' },
-                { field: 'GoodsType', title: '货物类型' },
+                {
+                    field: 'Status', title: '车辆状态', formatter: function (value, row, index) {
+                        return top.getDataDictValue('VehicleStatus', value);
+                    }
+                },
+                {
+                    field: 'MissonType', title: '任务类型', formatter: function (value, row, index) {
+                        return top.getDataDictValue('MissonType', value);
+                    }
+                },
+                {
+                    field: 'GoodsType', title: '货物类型', formatter: function (value, row, index) {
+                        return top.getDataDictValue('GoodsType', value);
+                    }
+                },
                 { field: 'GoodsName', title: '货物名称' },
                 { field: 'GoodsModel', title: '货物型号' },
-                { field: 'Destination', title: '目的地' },
+                {
+                    field: 'Destination', title: '目的地', formatter: function (value, row, index) {
+                        return top.getDataDictValue('Destination', value);
+                    }
+                },
+                { field: 'BillNumber', title: '提单号' },
 
             ],
             queryParams: function (params) {
                 var pagination = $('#gridTable').ysTable('getPagination', params);
                 var queryString = $('#searchDiv').getWebControls(pagination);
+                //只显示签到车辆
+                //queryString.Status = 1;
                 return queryString;
             }
         });
     }
     function searchGrid() {
         $('#gridTable').ysTable('search');
+        $('#OrdergridTable').ysTable('search');
         resetToolbarStatus();
     }
 
-    function showSaveForm(bAdd) {
-        var id = 0;
-        if (!bAdd) {
-            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
-            if (!ys.checkRowEdit(selectedRow)) {
+    function planSaveForm(bAdd) {
+
+
+        //取得订单和车辆选中的行
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        var selectedOrderRow = $('#OrdergridTable').bootstrapTable('getSelections');
+
+        if (!ys.checkRowEdit(selectedOrderRow)) {
                 return;
             }
             else {
-                id = selectedRow[0].Id;
+            //修改车辆信息的订单号码、Id、出货码头、车辆状态为已匹配
+            selectedRow[0].OrderNo = selectedOrderRow[0].OrderNo;
+            selectedRow[0].OrderId = selectedOrderRow[0].Id;
+            selectedRow[0].ShippingDock = selectedOrderRow[0].ShippingDock;
+            selectedRow[0].Status = 2;
+
+            //更新车辆表数据
+            var postData = selectedRow[0];
+               ys.ajax({
+                  url: '@Url.Content("~/ScheduleManage/Plan/SaveFormJson")',
+                    type: 'post',
+                    data: postData,
+                    success: function (obj) {
+                    if (obj.Tag == 1) {
+                        ys.msgSuccess(obj.Message);
+                        searchGrid();                
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+                });
+
             }
-        }
-        ys.openDialog({
-            title: id > 0 ? '编辑' : '添加',
-            content: '@Url.Content("~/ScheduleManage/plan/planForm")' + '?id=' + id,
-            width: '768px',
-            height: '550px',
-            callback: function (index, layero) {
-                var iframeWin = window[layero.find('iframe')[0]['name']];
-                iframeWin.saveForm(index);
-            }
-        });
+
+
     }
 
 

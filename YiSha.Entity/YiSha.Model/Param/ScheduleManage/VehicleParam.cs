@@ -17,5 +17,12 @@ namespace YiSha.Model.Param.ScheduleManage
         public string DriverIdentityNo { get; set; }
         public string DriverPhone { get; set; }
         public string VehicleNo { get; set; }
+        public string OrderNo { get; set; }
+        public int? MissonType { get; set; }
+        public int? GoodsType { get; set; }
+        public int? Status { get; set; }
+        public int? ShippingDock { get; set; }
+        public int? StartStatus { get; set; }
+        public int? EndStatus { get; set; }
     }
 }
