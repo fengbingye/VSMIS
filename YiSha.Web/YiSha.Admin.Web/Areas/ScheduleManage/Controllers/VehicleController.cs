@@ -68,6 +68,28 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
             TData<VehicleEntity> obj = await vehicleBLL.GetEntity(id);
             return Json(obj);
         }
+        [HttpGet]
+        //获取指定码头已匹配、签到的数量（Fdy@2021.4.2）
+        //参数：int iShippingDock（码头编码）
+        //返回obj，其中obj.data为排队数量
+        public async Task<IActionResult> GetLineCnt(int iShippingDock)
+        {
+            TData<int> obj = await vehicleBLL.GetLineCnt(iShippingDock);
+            return Json(obj);
+        }
+        [HttpGet]
+        //获取司机排队名次（Fdy@2021.4.2）
+        //参数：VehicleListParam param（条件参数）
+        //返回obj，其中obj.data为排队名次
+        public async Task<IActionResult> GetLineNo(VehicleListParam param)
+        {
+            TData<int> obj = new TData<int>();
+            if (!string.IsNullOrEmpty(param.DriverName) || !string.IsNullOrEmpty(param.DriverPhone) || !string.IsNullOrEmpty(param.VehicleNo))
+            {
+                obj = await vehicleBLL.GetLineNo(param);
+            }
+            return Json(obj);
+        }
         #endregion
 
         #region 提交数据

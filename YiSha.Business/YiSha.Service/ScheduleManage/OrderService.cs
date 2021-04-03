@@ -104,6 +104,14 @@ namespace YiSha.Service.ScheduleManage
                     param.EndTime = param.EndTime.Value.Date.Add(new TimeSpan(23, 59, 59));
                     expression = expression.And(t => t.CreateTime <= param.EndTime);
                 }
+                if (!string.IsNullOrEmpty(param.StartOrderStatus.ParseToString()))
+                {
+                    expression = expression.And(t => t.OrderStatus >= param.StartOrderStatus);
+                }
+                if (!string.IsNullOrEmpty(param.EndOrderStatus.ParseToString()))
+                {
+                    expression = expression.And(t => t.OrderStatus <= param.EndOrderStatus);
+                }
             }
             return expression;
         }

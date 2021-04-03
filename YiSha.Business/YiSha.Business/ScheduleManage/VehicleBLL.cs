@@ -49,6 +49,43 @@ namespace YiSha.Business.ScheduleManage
             }
             return obj;
         }
+        //获取指定码头已匹配、签到的数量（Fdy@2021.4.2）
+        public async Task<TData<int>> GetLineCnt(int iShippingDock)
+        {
+            TData<int> obj = new TData<int>();
+            obj.Data = await vehicleService.GetLineCnt(iShippingDock);
+            obj.Tag = 1;
+            return obj;
+        }
+        //获取司机排队名次（Fdy@2021.4.2）
+        public async Task<TData<int>> GetLineNo(VehicleListParam param)
+        {
+            int iShippingDock = await vehicleService.GetShippingDock(param);
+            param.ShippingDock = iShippingDock;
+            TData<List<VehicleEntity>> obj = await GetList(param);
+            List<VehicleEntity> VehicleEntityList = obj.Data.Where(p => p.Status >= 2 && p.Status <= 3).ToList();
+            VehicleEntityList = VehicleEntityList.OrderByDescending(p => p.Status).OrderBy(q => q.CheckTime).ToList();
+
+            TData<int> objNo = new TData<int>();
+
+            objNo.Data = 0;
+            int iRow = 0;
+            foreach (VehicleEntity item in VehicleEntityList)
+            {
+                iRow++;
+                string sDriverName = item.DriverName == null ? "" : item.DriverName.ToString();
+                string sDriverPhone = item.DriverPhone == null ? "" : item.DriverPhone.ToString();
+                string sVehicleNo = item.VehicleNo == null ? "" : item.VehicleNo.ToString();
+                if (string.IsNullOrEmpty(sDriverName) && string.IsNullOrEmpty(sDriverPhone) && string.IsNullOrEmpty(sVehicleNo))
+                    break;
+                if (item.DriverName.Contains(sDriverName) || item.DriverPhone.Contains(sDriverPhone) || item.VehicleNo.Contains(sVehicleNo))
+                {
+                    objNo.Data = iRow;
+                    break;
+                }
+            }
+            return objNo;
+        }
         #endregion
 
         #region 提交数据

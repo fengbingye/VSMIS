@@ -19,5 +19,7 @@ namespace YiSha.Model.Param.ScheduleManage
         public int? Destination { get; set; }
         public int? OrderStatus { get; set; }
         public int? ShippingDock { get; set; }
+        public int? StartOrderStatus { get; set; }
+        public int? EndOrderStatus { get; set; }
     }
 }

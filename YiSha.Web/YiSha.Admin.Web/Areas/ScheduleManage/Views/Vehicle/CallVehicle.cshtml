@@ -16,24 +16,38 @@
                     <li class="hidden">
                         车辆状态：<span id="endStatus" col="EndStatus"></span>
                     </li>
+                    <li class="hidden">
+                        订单号码：<input id="orderNo" col="OrderNo" type="text" />
+                    </li>
+                    <li class="hidden">
+                        订单状态：<input id="orderStatus" col="OrderStatus" type="text" />
+                    </li>
                     <li>
                         <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="btn-group-sm " id="toolbar">
-            <a id="btnEdit" class="btn btn-success " onclick="finishForm(1)"><i class="fa fa-plus"></i> 车辆呼叫</a>
-            <a id="btnEdit" class="btn btn-primary " onclick="finishForm(2)"><i class="fa fa-edit"></i> 车辆完成</a>
-            <a id="btnEdit" class="btn btn-danger " onclick="finishForm(3)"><i class="fa fa-remove"></i> 车辆取消</a>
+        <div class="col-sm-4">
+            <div class="col-sm-12 select-table table-striped">
+                <table id="OrdergridTable" data-mobile-responsive="true"></table>
+            </div>
         </div>
-        <div class="col-sm-12 select-table table-striped">
-            <table id="gridTable" data-mobile-responsive="true"></table>
+        <div class="col-sm-8">
+            <div class="btn-group-sm " id="toolbar">
+                <a id="btnEdit" class="btn btn-success " onclick="finishForm(1)"><i class="fa fa-plus"></i> 车辆呼叫</a>
+                <a id="btnEdit" class="btn btn-primary " onclick="finishForm(2)"><i class="fa fa-edit"></i> 车辆完成</a>
+                <a id="btnEdit" class="btn btn-danger " onclick="finishForm(3)"><i class="fa fa-remove"></i> 车辆取消</a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="gridTable" data-mobile-responsive="true"></table>
+            </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
+    var order_no;
     $(function () {
         $("#shippingDock").ysComboBox({
             data: top.getDataDict("ShippingDock"),
@@ -42,9 +56,52 @@
             maxHeight: "160px"
 
         });
+        initOrderGrid();
         initGrid();
-    });
 
+    });
+       function initOrderGrid() {
+        var queryUrl = '@Url.Content("~/ScheduleManage/plan/GetOrderPageListJson")';
+        $('#OrdergridTable').ysTable({
+            url: queryUrl,
+            showToggle: false,
+            showRefresh: false,
+            showColumns: false,
+            pagination: false,
+            sortName: 'CreateTime',
+            sortOrder: 'asc',
+            columns: [
+                { radio: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+                { field: 'OrderNo', title: '订单号' },
+                { field: 'CreateTime', title: '创建时间' },
+                {
+                    field: 'OrderStatus', title: '订单状态', formatter: function (value, row, index) {
+                        return top.getDataDictValue('OrderStatus', value);
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-primary btn-xs  mr-1" style="margin:5px" onclick="ExecOrder(\'' + 'begin' + '\')"><i class="fa fa-caret-square-o-right "></i>执行</a>');
+                        actions.push('<a class="btn btn-danger btn-xs mr-1"  onclick="EndOrder(\'' + row.Id + '\')"><i class="fa fa-close "></i>结束</a>');
+                        return actions.join('');
+                    }
+
+                }
+            ],
+            queryParams: function (params) {
+                var pagination = $('#OrdergridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                //只显示新订单和进行中的订单
+                queryString.StartOrderStatus = 1;
+                queryString.EndOrderStatus = 2;
+                return queryString;
+            }
+        });
+    }
     function initGrid() {
         var queryUrl = '@Url.Content("~/ScheduleManage/Vehicle/GetPageListJson")';
         $('#gridTable').ysTable({
@@ -78,6 +135,7 @@
             queryParams: function (params) {
                 var pagination = $('#gridTable').ysTable('getPagination', params);
                 var queryString = $('#searchDiv').getWebControls(pagination);
+                queryString.OrderNo = order_no;
                 //只显示车辆状态为匹配和装货中
                 queryString.StartStatus = 2;
                 queryString.EndStatus = 3;
@@ -87,6 +145,7 @@
     }
 
     function searchGrid() {
+        $('#OrdergridTable').ysTable('search');
         $('#gridTable').ysTable('search');
         resetToolbarStatus();
     }
@@ -115,7 +174,7 @@
                     success: function (obj) {
                         if (obj.Tag == 1) {
                             ys.msgSuccess(obj.Message);
-                            searchGrid();
+                            $('#gridTable').ysTable('search')
                         }
                         else {
                             ys.msgError(obj.Message);
@@ -124,6 +183,54 @@
                 });
             });
         }
+    }
+    function ExecOrder(attr) {
+        var selectedOrderRow = $('#OrdergridTable').bootstrapTable('getSelections');
+        order_no = selectedOrderRow[0].OrderNo;
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+        if (selectedOrderRow[0].OrderStatus == 1) {
+            selectedOrderRow[0].OrderStatus = 2;
+            selectedOrderRow[0].ExecutionTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
+            var postData = selectedOrderRow[0];
+            ys.ajax({
+                url: '@Url.Content("~/ScheduleManage/Order/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        $('#OrdergridTable').ysTable('search');
+          ``            //initOrderGrid();
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+    function EndOrder(attr) {
+        var selectedOrderRow = $('#OrdergridTable').bootstrapTable('getSelections');
+        ys.confirm('确认要结束订单号：' + selectedOrderRow[0].OrderNo + '的任务吗？', function () {
+            selectedOrderRow[0].FinishTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
+            selectedOrderRow[0].OrderStatus = 3;
+            var postData = selectedOrderRow[0];
+            ys.ajax({
+                url: '@Url.Content("~/ScheduleManage/Order/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        //ys.msgSuccess(obj.Message);
+                        $('#OrdergridTable').ysTable('search');
+                        //initOrderGrid();
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        });
     }
 
 </script>

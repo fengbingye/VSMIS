@@ -136,7 +136,6 @@
 
         if ($('#form').validate().form()) {
             var postData = $('#form').getWebControls({ Id: id });
-
             ys.ajax({
                 url: '@Url.Content("~/ScheduleManage/Order/SaveFormJson")',
                 type: 'post',

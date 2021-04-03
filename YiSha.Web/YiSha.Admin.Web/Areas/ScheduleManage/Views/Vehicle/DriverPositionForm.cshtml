@@ -23,15 +23,14 @@
             </div>
         </div>
         <div class="btn-group-sm " id="toolbar">
-            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 签到</a>
-            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
-            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
-            <a id="btnAdd" class="btn btn-info " onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 排队</a>
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 车辆签到</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 信息修改</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 车辆删除</a>
+ 
         </div>
         <div class="col-sm-12 select-table table-striped">
             <table id="gridTable" data-mobile-responsive="true"></table>
         </div>
-
     </div>
 </div>
 
@@ -105,27 +104,6 @@
     }
 
     function deleteForm() {
-        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
-        if (ys.checkRowDelete(selectedRow)) {
-            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
-                var ids = ys.getIds(selectedRow);
-                ys.ajax({
-                    url: '@Url.Content("~/ScheduleManage/Vehicle/DeleteFormJson")' + '?ids=' + ids,
-                    type: 'post',
-                    success: function (obj) {
-                        if (obj.Tag == 1) {
-                            ys.msgSuccess(obj.Message);
-                            searchGrid();
-                        }
-                        else {
-                            ys.msgError(obj.Message);
-                        }
-                    }
-                });
-            });
-        }
-    }
-    function positionForm() {
         var selectedRow = $('#gridTable').bootstrapTable('getSelections');
         if (ys.checkRowDelete(selectedRow)) {
             ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {

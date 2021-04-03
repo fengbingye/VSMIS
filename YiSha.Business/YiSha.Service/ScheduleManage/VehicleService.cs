@@ -41,6 +41,32 @@ namespace YiSha.Service.ScheduleManage
         {
             return await this.BaseRepository().FindEntity<VehicleEntity>(id);
         }
+
+        //获取指定码头已匹配、签到的数量（Fdy@2021.4.2）
+        public async Task<int> GetLineCnt(int iShippingDock)
+        {
+            int iRtn = 0;
+            var expression = LinqExtensions.True<VehicleEntity>();
+            expression = expression.And(t => t.ShippingDock == iShippingDock);
+            expression = expression.And(t => t.Status == 2 || t.Status == 3);
+            var list = await this.BaseRepository().FindList(expression);
+            iRtn = list.Count();
+            return iRtn;
+        }
+        //按条件获取码头编码（Fdy@2021.4.2）
+        public async Task<int> GetShippingDock(VehicleListParam param)
+        {
+            int iRtn = 0;
+            var expression = ListFilter(param);
+            expression = expression.And(t => t.Status == 2 || t.Status == 3);
+            var list = await this.BaseRepository().FindList(expression);
+            foreach(VehicleEntity item in list)
+            {
+                iRtn = (int)item.ShippingDock;
+                break;
+            }
+            return iRtn;
+        }
         #endregion
 
         #region 提交数据
