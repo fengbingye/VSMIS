@@ -151,7 +151,7 @@
                 var pagination = $('#gridTable').ysTable('getPagination', params);
                 var queryString = $('#searchDiv').getWebControls(pagination);
                 //只显示签到车辆
-                //queryString.Status = 1;
+                queryString.Status = 1;
                 return queryString;
             }
         });

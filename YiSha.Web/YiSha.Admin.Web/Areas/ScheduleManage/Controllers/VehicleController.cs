@@ -32,6 +32,11 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
             {
                return View();
         }
+        [AuthorizeFilter("schedule:vehicle:view")]
+        public ActionResult QueryVehicleIndex()
+        {
+            return View();
+        }
         public ActionResult CallVehicle()
         {
             return View();

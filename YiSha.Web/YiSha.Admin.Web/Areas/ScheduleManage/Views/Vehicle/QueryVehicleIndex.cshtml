@@ -1,0 +1,207 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+
+ }
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        司机姓名：<input id="driverName" col="DriverName" type="text" />
+                    </li>
+                    <li>
+                        联系电话：<input id="driverPhone" col="DriverPhone" type="text" />
+                    </li>
+                    <li>
+                        车牌号码：<input id="vehicleNo" col="VehicleNo" type="text" />
+                    </li>
+                    <li>
+                        车辆状态：<span id="status" col="Status"></span>
+                    </li>
+
+                    <li>
+                        任务类型：<span id="missonType" col="MissonType"></span>
+                    </li>
+
+                    <li>
+                        货物类型：<span id="goodsType" col="GoodsType"></span>
+                    </li>
+                    <li>
+                        目的地：<span id="destination" col="Destination"></span>
+                    </li>
+                    <li>
+                        出货码头：<span id="shippingDock" col="ShippingDock"></span>
+                    </li>
+                    <li class="select-time">
+                        <label>操作时间： </label>
+                        <input id="startTime" col="StartTime" type="text" class="time-input" placeholder="开始时间" />
+                        <span>-</span>
+                        <input id="endTime" col="EndTime" type="text" class="time-input" placeholder="结束时间" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        initGrid();
+        $("#logStatus").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(OperateStatusEnum).EnumToDictionaryString())) });
+
+        laydate.render({ elem: '#startTime', format: 'yyyy-MM-dd' });
+        laydate.render({ elem: '#endTime', format: 'yyyy-MM-dd' });
+        $("#missonType").ysComboBox({
+            data: top.getDataDict("MissonType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+        $("#goodsType").ysComboBox({
+            data: top.getDataDict("GoodsType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+        $("#status").ysComboBox({
+            data: top.getDataDict("VehicleStatus"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+        $("#destination").ysComboBox({
+            data: top.getDataDict("Destination"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+        $("#shippingDock").ysComboBox({
+            data: top.getDataDict("ShippingDock"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/ScheduleManage/Vehicle/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            columns: [
+                { checkbox: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+                { field: 'VehicleNo', title: '车牌号码' },
+                { field: 'DriverName', title: '司机姓名' },
+                { field: 'DriverIdentityNo', title: '身份证号码' },
+                { field: 'DriverPhone', title: '联系电话' },
+                { field: 'CheckTime', title: '签到时间' },
+                {
+                    field: 'MissonType', title: '任务类型', formatter: function (value, row, index) {
+                        return top.getDataDictValue('MissonType', value);
+                    }
+                },
+                {
+                    field: 'GoodsType', title: '货物类型', formatter: function (value, row, index) {
+                        return top.getDataDictValue('GoodsType', value);
+                    }
+                },
+                {
+                    field: 'ShippingDock', title: '出货码头', formatter: function (value, row, index) {
+                        return top.getDataDictValue('ShippingDock', value);
+                    }
+                },
+                { field: 'OrderNo', title: '订单号码' },
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showSaveForm(bAdd) {
+        var id = 0;
+        if (!bAdd) {
+            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            if (!ys.checkRowEdit(selectedRow)) {
+                return;
+            }
+            else {
+                id = selectedRow[0].Id;
+            }
+        }
+        ys.openDialog({
+            title: id > 0 ? '编辑' : '车辆签到',
+            content: '@Url.Content("~/ScheduleManage/Vehicle/VehicleForm")' + '?id=' + id,
+            width: '768px',
+            height: '400px',
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function deleteForm() {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (ys.checkRowDelete(selectedRow)) {
+            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
+                var ids = ys.getIds(selectedRow);
+                ys.ajax({
+                    url: '@Url.Content("~/ScheduleManage/Vehicle/DeleteFormJson")' + '?ids=' + ids,
+                    type: 'post',
+                    success: function (obj) {
+                        if (obj.Tag == 1) {
+                            ys.msgSuccess(obj.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(obj.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+    function positionForm() {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (ys.checkRowDelete(selectedRow)) {
+            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
+                var ids = ys.getIds(selectedRow);
+                ys.ajax({
+                    url: '@Url.Content("~/ScheduleManage/Vehicle/DeleteFormJson")' + '?ids=' + ids,
+                    type: 'post',
+                    success: function (obj) {
+                        if (obj.Tag == 1) {
+                            ys.msgSuccess(obj.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(obj.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+</script>

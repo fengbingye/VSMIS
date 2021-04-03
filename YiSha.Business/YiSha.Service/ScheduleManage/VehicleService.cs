@@ -142,6 +142,15 @@ namespace YiSha.Service.ScheduleManage
                 {
                     expression = expression.And(t => t.Status <= param.EndStatus);
                 }
+                if (!string.IsNullOrEmpty(param.StartTime.ParseToString()))
+                {
+                    expression = expression.And(t => t.CheckTime >= param.StartTime);
+                }
+                if (!string.IsNullOrEmpty(param.EndTime.ParseToString()))
+                {
+                    param.EndTime = param.EndTime.Value.Date.Add(new TimeSpan(23, 59, 59));
+                    expression = expression.And(t => t.CheckTime <= param.EndTime);
+                }
             }
             return expression;
         }

@@ -32,7 +32,11 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
         {
             return View();
         }
-
+        [AuthorizeFilter("schedule:order:view")]
+        public ActionResult QueryOrderIndex()
+        {
+            return View();
+        }
         public async Task<IActionResult> OrderForm()
         {
             OperatorInfo operatorInfo = await Operator.Instance.Current();

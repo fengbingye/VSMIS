@@ -1,0 +1,188 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+    OperatorInfo operatorInfo = ViewBag.OperatorInfo;
+ }
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        订单号：<input id="orderNo" col="OrderNo" type="text" />
+                    </li>
+                    <li>
+                        订单状态：<span id="orderStatus" col="OrderStatus"></span>
+                    </li>
+
+                    <li>
+                        任务类型：<span id="missonType" col="MissonType"></span>
+                    </li>
+
+                    <li>
+                        货物类型：<span id="goodsType" col="GoodsType"></span>
+                    </li>
+                    <li>
+                        目的地：<span id="destination" col="Destination"></span>
+                    </li>
+                    <li>
+                        出货码头：<span id="shippingDock" col="ShippingDock"></span>
+                    </li>
+                    <li class="select-time">
+                        <label>操作时间： </label>
+                        <input id="startTime" col="StartTime" type="text" class="time-input" placeholder="开始时间" />
+                        <span>-</span>
+                        <input id="endTime" col="EndTime" type="text" class="time-input" placeholder="结束时间" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        initGrid();
+        $("#logStatus").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(OperateStatusEnum).EnumToDictionaryString())) });
+
+        laydate.render({ elem: '#startTime', format: 'yyyy-MM-dd' });
+        laydate.render({ elem: '#endTime', format: 'yyyy-MM-dd' });
+        $("#missonType").ysComboBox({
+            data: top.getDataDict("MissonType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+        $("#goodsType").ysComboBox({
+            data: top.getDataDict("GoodsType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+        $("#orderStatus").ysComboBox({
+            data: top.getDataDict("OrderStatus"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+        $("#destination").ysComboBox({
+            data: top.getDataDict("Destination"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+        $("#shippingDock").ysComboBox({
+            data: top.getDataDict("ShippingDock"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px"
+
+        });
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/ScheduleManage/Order/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            columns: [
+                { checkbox: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+                { field: 'OrderNo', title: '销售订单号' },
+                {
+                    field: 'MissonType', title: '任务类型', formatter: function (value, row, index) {
+                        return top.getDataDictValue('MissonType', value);
+                    }
+                },
+                {
+                    field: 'GoodsType', title: '货物类型', formatter: function (value, row, index) {
+                        return top.getDataDictValue('GoodsType', value);
+                    }
+                },
+                {
+                    field: 'ShippingDock', title: '出货码头', formatter: function (value, row, index) {
+                        return top.getDataDictValue('ShippingDock', value);
+                    }
+                },
+                {
+                    field: 'OrderStatus', title: '订单状态', formatter: function (value, row, index) {
+                        return top.getDataDictValue('OrderStatus', value);
+                    }
+                },
+                {
+                    field: 'Destination', title: '目的地', formatter: function (value, row, index) {
+                        return top.getDataDictValue('Destination', value);
+                    }
+                },
+                { field: 'CreateTime', title: '创建时间' },
+                { field: 'ExecutionTime', title: '执行时间' },
+                { field: 'FinishTime', title: '完成时间' },
+
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showSaveForm(bAdd) {
+        var id = 0;
+        if (!bAdd) {
+            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            if (!ys.checkRowEdit(selectedRow)) {
+                return;
+            }
+            else {
+                id = selectedRow[0].Id;
+            }
+        }
+        ys.openDialog({
+            title: id > 0 ? '编辑' : '新增',
+            content: '@Url.Content("~/ScheduleManage/Order/OrderForm")' + '?id=' + id,
+            width: '500px',
+            height: '420px',
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function deleteForm() {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (ys.checkRowDelete(selectedRow)) {
+            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
+                var ids = ys.getIds(selectedRow);
+                ys.ajax({
+                    url: '@Url.Content("~/ScheduleManage/Order/DeleteFormJson")' + '?ids=' + ids,
+                    type: 'post',
+                    success: function (obj) {
+                        if (obj.Tag == 1) {
+                            ys.msgSuccess(obj.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(obj.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+</script>
