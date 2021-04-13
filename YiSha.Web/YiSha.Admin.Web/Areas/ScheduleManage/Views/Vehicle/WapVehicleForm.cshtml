@@ -1,0 +1,319 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-xs-12 control-label ">司机姓名<font class="red"> *</font></label>
+            <div class="col-xs-12">
+                <input id="driverName" col="DriverName" type="text" class="form-control" />
+            </div>
+            <label class="col-xs-12  control-label ">联系电话<font class="red"> *</font></label>
+            <div class="col-xs-12 ">
+                <input id="driverPhone" col="DriverPhone" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">身份证号码<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="driverIdentityNo" col="DriverIdentityNo" type="text" class="form-control" />
+            </div>
+
+            <label class="col-sm-2 control-label ">车牌号<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="vehicleNo" col="VehicleNo" type="text" class="form-control" />
+            </div>
+        </div>
+
+
+        <div class="form-group">
+
+            <label class="col-sm-2 control-label ">货物类型<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <div id="goodsType" col="GoodsType"></div>
+            </div>
+
+            <label class="col-sm-2 control-label m-2 " id="mission">任务类型<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <div id="missonType" col="MissonType"></div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label " id="destina">目的地<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <div id="destination" class="disabled" col="Destination"></div>
+            </div>
+            <label class="col-sm-2 control-label " id="order">销售订单号<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="orderNo" col="OrderNo" type="text" class="form-control " />
+            </div>
+        </div>
+        <div class="form-group ">
+            <label class="col-sm-2 control-label " id="bill">提单号<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="billNumber" col="BillNumber" type="text" class="form-control " />
+            </div>
+            <label class="col-sm-2 control-label " id="cabinet">柜号<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="cabinetNo" col="CabinetNo" type="text" class="form-control" />
+            </div>
+
+        </div>
+
+        <div class="form-group ">
+            <label class="col-sm-2 control-label " id="goods">货物名称<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="goodsName" col="GoodsName" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label " id="model">货物型号<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="goodsModel" col="GoodsModel" type="text" class="form-control" />
+            </div>
+
+        </div>
+
+        <div class="form-group hidden">
+            <label class="col-sm-2 control-label ">状态<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="status" col="Status" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">签到时间<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="checkTime" col="CheckTime" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group hidden">
+            <label class="col-sm-2 control-label ">操作员姓名<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="userName" col="UserName" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">部门名称<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="deptName" col="DeptName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group hidden">
+            <label class="col-sm-2 control-label ">DeptId<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="deptId" col="DeptId" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">UserId<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="userId" col="UserId" type="text" class="form-control" />
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var goods_sel,mission_sel,den_del;
+    var id = ys.request("id");
+
+    $(function () {
+        $("#destination").hide();
+        $("#destina").hide();
+        $('#orderNo').hide();
+        $('#order').hide();
+        $("#orderNo").css('display', 'none')
+        $('#cabinetNo').hide();
+        $('#cabinet').hide();
+        $('#bill').hide();
+        $('#billNumber').hide();
+        $('#goodsName').hide();
+        $('#goods').hide();
+        $('#model').hide();
+        $('#goodsModel').hide();
+        $("#goodsType").ysComboBox({
+            data: top.getDataDict("GoodsType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px",
+            class: "form-control"
+        });
+
+        $("#missonType").ysComboBox({
+            data: top.getDataDict("MissonType"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px",
+            class: "form-control"
+        });
+        $("#destination").ysComboBox({
+            data: top.getDataDict("Destination"),
+            key: "DictKey",
+            value: "DictValue",
+            maxHeight: "160px",
+            class: "form-control"
+        });
+
+
+
+        getForm();
+
+        $('#form').validate({
+
+            rules: {
+                driverName: { required: true },
+                driverPhone: { required: true },
+                driverIdentityNo: { required: true },
+                missonType_select: { required: true },
+                goodsType_select: { required: true },
+                orderNo: { required: true },
+                goodsModel: { required: true },
+                goodsName: { required: true },
+                billNumber: { required: true },
+                cabinetNo: { required: true },
+                destination_select: { required: true },
+                vehicleNo: { required: true }
+            }
+        });
+    });
+
+    $("#goodsType").change(function () {
+
+        goods_sel = $("#goodsType option:checked").val();
+
+        if (goods_sel == 1) {
+
+            $('#missonType').ysComboBox('setValue', 1)
+            $('#goodsName').hide();
+            $('#goods').hide();
+            $('#model').hide();
+            $('#goodsModel').hide();
+        }
+        else {
+    
+            $('#missonType').show();
+            $('#mission').show();
+            $('#orderNo').hide();
+            $('#order').hide();
+        }
+
+    });
+
+    $("#missonType").change(function () {
+
+        mission_sel = $("#missonType option:checked").val();
+        if (goods_sel == 1) {
+            $('#orderNo').hide();
+            $('#order').hide();
+        }
+        if ((mission_sel == 1)&& (goods_sel == 1))
+        {
+            $('#goodsName').hide();
+            $('#goods').hide();
+            $('#model').hide();
+            $('#goodsModel').hide();
+            $('#cabinetNo').hide();
+            $('#cabinet').hide();
+            $('#bill').hide();
+            $('#billNumber').hide();
+            $("#destination").show();
+            $("#destina").show();
+            $('#orderNo').show();
+            $('#order').show();
+        }
+        if ((mission_sel == 1)&& (goods_sel == 2))
+        {
+            $("#destination").hide();
+            $("#destina").hide();
+            $('#orderNo').hide();
+            $('#order').hide();
+            $('#cabinetNo').hide();
+            $('#cabinet').hide();
+            $('#bill').hide();
+            $('#billNumber').hide();
+            $('#goodsName').hide();
+            $('#goods').hide();
+            $('#model').hide();
+            $('#goodsModel').hide();
+        }
+        if ((mission_sel == 2)&& (goods_sel == 2))
+        {
+
+            $("#destination").hide();
+            $("#destina").hide();
+            $('#orderNo').hide();
+            $('#order').hide();
+            $('#cabinetNo').hide();
+            $('#cabinet').hide();
+            $('#bill').hide();
+            $('#billNumber').hide();
+            $('#goodsName').show();
+            $('#goods').show();
+            $('#model').show();
+            $('#goodsModel').show();
+
+        }
+    });
+
+    $("#destination").change(function () {
+
+        den_del = $("#destination option:checked").val();
+
+        if (den_del == 2) {
+            $('#orderNo').hide();
+            $('#order').hide();
+            $('#cabinetNo').show();
+            $('#cabinet').show();
+            $('#bill').show();
+            $('#billNumber').show();
+        }
+        else {
+
+            $('#cabinetNo').hide();
+            $('#cabinet').hide();
+            $('#bill').hide();
+            $('#billNumber').hide();
+
+        }
+
+    });
+    function getForm() {
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/ScheduleManage/Vehicle/GetFormJson")' + '?id=' + id,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        $('#form').setWebControls(obj.Data);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            defaultData.CheckTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
+            defaultData.Status = 1;
+
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/ScheduleManage/Vehicle/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+

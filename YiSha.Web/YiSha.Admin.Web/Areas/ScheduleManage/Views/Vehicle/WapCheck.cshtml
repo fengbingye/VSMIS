@@ -4,17 +4,17 @@
  }
 <div class="container-div">
     <div class="row">
-        <div id="searchDiv" class="col-xs-12 search-collapse">
-            <div class="select-list">
-                <ul>
-                    <li>
-                        司机姓名：<input id="driverName" col="DriverName" type="text" />
+        <div id="searchDiv"  class="search-collapse">
+
+                <ul class="select-list" >
+                    <li class="col-sm-12" >
+                        司机姓名：<input id="driverName" col="DriverName" type="text" style="width:245px" />
                     </li>
-                    <li>
-                        联系电话：<input id="driverPhone" col="DriverPhone" type="text" />
+                    <li class="col-sm-12 " >
+                        联系电话：<input id="driverPhone" col="DriverPhone" type="text" style="width:245px" />
                     </li>
-                    <li>
-                        车牌号码：<input id="vehicleNo" col="VehicleNo" type="text" />
+                    <li class="col-sm-12">
+                        车牌号码：<input id="vehicleNo"   col="VehicleNo" type="text" style="width:245px" />
                     </li>
                     <li class="hidden">
                         出货码头：<span id="shippingDock" col="ShippingDock"></span>
@@ -26,15 +26,13 @@
                         车辆状态：<span id="endStatus" col="EndStatus"></span>
                     </li>
                     <li>
-                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                        <a id="btnSearch" class="btn btn-primary btn-sm p-3 border bg-light" onclick="searchGrid()" ><i class="fa fa-search"></i>&nbsp;搜索</a>
                     </li>
                 </ul>
-            </div>
+
         </div>
         <div class="btn-group-sm " id="toolbar">
             <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 签到</a>
-            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
-            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
             <a  class="btn btn-info " onclick="Queryposition()"><i class="fa fa-automobile"></i> 排队</a>
         </div>
         <div class="col-sm-12 select-table table-striped">
@@ -46,15 +44,19 @@
 
 <script type="text/javascript">
     var dockId = 0;
+    $('#btnSearch').css("marginLeft", '15px');
+    $('#btnSearch').css("marginTop", '10px');
     $(function () {
         initGrid();
+
     });
 
     function initGrid() {
         var queryUrl = '@Url.Content("~/ScheduleManage/Vehicle/GetPageListJson")';
         $('#gridTable').ysTable({
             url: queryUrl,
-            search:true,
+            showRefresh: false,
+            showToggle: false,
             sortName: 'CheckTime',
             sortOrder: 'asc',
             columns: [
@@ -63,24 +65,7 @@
                 { field: 'CheckTime', title: '签到时间' },
                 { field: 'VehicleNo', title: '车牌号码' },
                 { field: 'DriverName', title: '司机姓名' },
-                { field: 'DriverIdentityNo', title: '身份证号码' },
-                { field: 'DriverPhone', title: '联系电话' },
 
-                {
-                    field: 'MissonType', title: '任务类型', formatter: function (value, row, index) {
-                        return top.getDataDictValue('MissonType', value);
-                    }
-                },
-                {
-                    field: 'GoodsType', title: '货物类型', formatter: function (value, row, index) {
-                        return top.getDataDictValue('GoodsType', value);
-                    }
-                },
-                {
-                    field: 'ShippingDock', title: '出货码头', formatter: function (value, row, index) {
-                        return top.getDataDictValue('ShippingDock', value);
-                    }
-                },
             ],
             queryParams: function (params) {
                 var pagination = $('#gridTable').ysTable('getPagination', params);
@@ -118,9 +103,9 @@
         }
         ys.openDialog({
             title: id > 0 ? '编辑' : '车辆签到',
-            content: '@Url.Content("~/ScheduleManage/Vehicle/VehicleForm")' + '?id=' + id,
-            width: '768px',
-            height: '400px',
+            content: '@Url.Content("~/ScheduleManage/Vehicle/WapVehicleForm")' + '?id=' + id,
+            width: '380px',
+            height: '600px',
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
                 iframeWin.saveForm(index);

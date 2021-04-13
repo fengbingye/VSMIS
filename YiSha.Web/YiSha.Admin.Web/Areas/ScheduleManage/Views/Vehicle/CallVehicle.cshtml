@@ -4,7 +4,7 @@
  }
 <div class="container-div">
     <div class="row">
-        <div id="searchDiv" class="col-sm-12 search-collapse">
+        <div id="searchDiv" class=" col-sm-12 search-collapse">
             <div class="select-list">
                 <ul>
                     <li>
@@ -86,7 +86,7 @@
                     formatter: function (value, row, index) {
                         var actions = [];
                         actions.push('<a class="btn btn-primary btn-xs  mr-1" style="margin:5px" onclick="ExecOrder(\'' + 'begin' + '\')"><i class="fa fa-caret-square-o-right "></i>执行</a>');
-                        actions.push('<a class="btn btn-danger btn-xs mr-1"  onclick="EndOrder(\'' + 'end' + '\')"><i class="fa fa-close "></i>结束</a>');
+                        actions.push('<a class="btn btn-danger btn-xs mr-1"  onclick="EndOrder(\'' + row.data + '\')"><i class="fa fa-close "></i>结束</a>');
                         return actions.join('');
                     }
 
@@ -186,6 +186,10 @@
     }
     function ExecOrder(attr) {
         var selectedOrderRow = $('#OrdergridTable').bootstrapTable('getSelections');
+        if (!ys.checkRowEdit(selectedOrderRow)) {
+            ys.alertWarning('请选择一条订单！');
+            return;
+        }
         order_no = selectedOrderRow[0].OrderNo;
         $('#gridTable').ysTable('search');
         resetToolbarStatus();
@@ -209,8 +213,13 @@
             });
         }
     }
-    function EndOrder(attr) {
+    function EndOrder(row) {
+
         var selectedOrderRow = $('#OrdergridTable').bootstrapTable('getSelections');
+        if (!ys.checkRowEdit(selectedOrderRow)) {
+            ys.alertWarning('请选择一条订单！');
+            return;
+        }
         ys.confirm('确认要结束订单号：' + selectedOrderRow[0].OrderNo + '的任务吗？', function () {
             selectedOrderRow[0].FinishTime = '@DateTime.Now.ToString("yyyy-MM-dd HH:mm")';
             selectedOrderRow[0].OrderStatus = 3;
@@ -223,7 +232,6 @@
                     if (obj.Tag == 1) {
                         //ys.msgSuccess(obj.Message);
                         $('#OrdergridTable').ysTable('search');
-                        //initOrderGrid();
                     }
                     else {
                         ys.msgError(obj.Message);

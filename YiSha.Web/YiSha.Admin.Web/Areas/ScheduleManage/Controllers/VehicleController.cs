@@ -33,7 +33,7 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
                return View();
         }
         [AuthorizeFilter("schedule:vehicle:view")]
-        public ActionResult QueryVehicleIndex()
+        public ActionResult WapCheck()
         {
             return View();
         }
@@ -46,6 +46,13 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
             OperatorInfo operatorInfo = await Operator.Instance.Current();
             ViewBag.OperatorInfo = operatorInfo;
             
+            return View();
+        }
+        public async Task<IActionResult> WapVehicleForm()
+        {
+            OperatorInfo operatorInfo = await Operator.Instance.Current();
+            ViewBag.OperatorInfo = operatorInfo;
+
             return View();
         }
         #endregion
