@@ -91,11 +91,10 @@
     });
 
     function initGrid() {
-        var queryUrl = '@Url.Content("~/ScheduleManage/Order/GetPageListJson")';
+        var queryUrl = '@Url.Content("~/ScheduleManage/OrderBrowser/GetPageListJson")';
         $('#gridTable').ysTable({
             url: queryUrl,
             columns: [
-                { checkbox: true, visible: true },
                 { field: 'Id', title: 'Id', visible: false },
                 { field: 'OrderNo', title: '销售订单号' },
                 {
@@ -154,7 +153,7 @@
         }
         ys.openDialog({
             title: id > 0 ? '编辑' : '新增',
-            content: '@Url.Content("~/ScheduleManage/Order/OrderForm")' + '?id=' + id,
+            content: '@Url.Content("~/ScheduleManage/OrderBrowser/OrderBrowserForm")' + '?id=' + id,
             width: '500px',
             height: '420px',
             callback: function (index, layero) {

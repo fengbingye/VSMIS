@@ -1,0 +1,157 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">OrderNo<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="orderNo" col="OrderNo" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">DriverName</label>
+            <div class="col-sm-8">
+                <input id="driverName" col="DriverName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">DriverIdentityNo</label>
+            <div class="col-sm-8">
+                <input id="driverIdentityNo" col="DriverIdentityNo" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">DriverPhone</label>
+            <div class="col-sm-8">
+                <input id="driverPhone" col="DriverPhone" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">VehicleNo</label>
+            <div class="col-sm-8">
+                <input id="vehicleNo" col="VehicleNo" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">CheckTime</label>
+            <div class="col-sm-8">
+                <input id="checkTime" col="CheckTime" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">MissonType</label>
+            <div class="col-sm-8">
+                <input id="missonType" col="MissonType" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">GoodsType</label>
+            <div class="col-sm-8">
+                <input id="goodsType" col="GoodsType" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">GoodsName</label>
+            <div class="col-sm-8">
+                <input id="goodsName" col="GoodsName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">GoodsModel</label>
+            <div class="col-sm-8">
+                <input id="goodsModel" col="GoodsModel" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Destination</label>
+            <div class="col-sm-8">
+                <input id="destination" col="Destination" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">BillNumber</label>
+            <div class="col-sm-8">
+                <input id="billNumber" col="BillNumber" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">CabinetNo</label>
+            <div class="col-sm-8">
+                <input id="cabinetNo" col="CabinetNo" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Loadable</label>
+            <div class="col-sm-8">
+                <input id="loadable" col="Loadable" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">Loaded</label>
+            <div class="col-sm-8">
+                <input id="loaded" col="Loaded" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">ShippingDock</label>
+            <div class="col-sm-8">
+                <input id="shippingDock" col="ShippingDock" type="text" class="form-control" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    $(function () {
+        getForm();
+
+        $('#form').validate({
+            rules: {
+                orderNo: { required: true }
+            }
+        });
+    });
+
+    function getForm() {
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/ScheduleManage/VehicleBrowser/GetFormJson")' + '?id=' + id,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        $('#form').setWebControls(obj.Data);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/ScheduleManage/VehicleBrowser/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+

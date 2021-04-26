@@ -20,6 +20,7 @@ namespace YiSha.Business.ScheduleManage
     public class OrderBLL
     {
         private OrderService orderService = new OrderService();
+        private OrderBrowserService _OrderBrowserService = new OrderBrowserService();
 
         #region 获取数据
         public async Task<TData<List<OrderEntity>>> GetList(OrderListParam param)
@@ -64,6 +65,41 @@ namespace YiSha.Business.ScheduleManage
             await orderService.SaveForm(entity);
             obj.Data = entity.Id.ParseToString();
             obj.Tag = 1;
+            //订单结束时将订单及关联车辆移至历史记录
+            if (entity.OrderStatus == 3 || entity.OrderStatus == 4)
+            {
+                //TData<List<VehicleEntity>> VehicleList = new TData<List<VehicleEntity>>();
+                //List<VehicleEntity> VehicleList = new List<VehicleEntity>();
+                //VehicleList.Data = await orderService.GetPageList(param, pagination);
+                //VehicleList = await orderService.GetVehicleList(entity.Id.ToString());
+                long lId = 0;
+                long.TryParse(entity.Id.ParseToString(), out lId);
+                if (lId < 1)
+                    return obj;
+                string sVehicleIds = await orderService.GetVehicleIds(lId);
+                //将OrderEntity数据写入OrderBrowserEntity
+                OrderBrowserEntity obEntity = new OrderBrowserEntity();
+                obEntity.OrderId = entity.Id;
+                obEntity.OrderNo = entity.OrderNo;
+                obEntity.MissonType = entity.MissonType;
+                obEntity.GoodsType = entity.GoodsType;
+                obEntity.Destination = entity.Destination;
+                obEntity.TotalQuantity = entity.TotalQuantity;
+                obEntity.CreateTime = entity.CreateTime;
+                obEntity.ExecutionTime = entity.ExecutionTime;
+                obEntity.FinishTime = entity.FinishTime;
+                obEntity.OperationTime = entity.OperationTime;
+                obEntity.OrderStatus = entity.OrderStatus;
+                obEntity.ShippingDock = entity.ShippingDock;
+                obEntity.UserId = entity.UserId;
+                obEntity.UserName = entity.UserName;
+                obEntity.DeptId = entity.DeptId;
+                obEntity.DeptName = entity.DeptName;
+                obEntity.Remarks = entity.Remarks;
+                await _OrderBrowserService.SaveForm(obEntity);
+                //删除OrderEntity数据
+                await DeleteForm(entity.Id.ParseToString());
+            }
             return obj;
         }
 

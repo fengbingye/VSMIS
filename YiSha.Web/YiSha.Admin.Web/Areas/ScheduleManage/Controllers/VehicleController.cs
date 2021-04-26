@@ -37,6 +37,10 @@ namespace YiSha.Admin.Web.Areas.ScheduleManage.Controllers
         {
             return View();
         }
+        public ActionResult QueryVehicleIndex()
+        {
+            return View();
+        }
         public ActionResult CallVehicle()
         {
             return View();

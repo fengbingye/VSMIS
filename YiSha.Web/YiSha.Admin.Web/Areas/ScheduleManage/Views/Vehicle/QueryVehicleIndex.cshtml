@@ -98,11 +98,11 @@
     });
 
     function initGrid() {
-        var queryUrl = '@Url.Content("~/ScheduleManage/Vehicle/GetPageListJson")';
+        var queryUrl = '@Url.Content("~/ScheduleManage/VehicleBrowser/GetPageListJson")';
         $('#gridTable').ysTable({
             url: queryUrl,
             columns: [
-                { checkbox: true, visible: true },
+
                 { field: 'Id', title: 'Id', visible: false },
                 { field: 'VehicleNo', title: '车牌号码' },
                 { field: 'DriverName', title: '司机姓名' },
