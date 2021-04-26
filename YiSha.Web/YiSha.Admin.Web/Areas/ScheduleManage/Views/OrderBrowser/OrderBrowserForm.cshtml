@@ -1,0 +1,141 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">OrderNo<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="orderNo" col="OrderNo" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">GoodsType<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="goodsType" col="GoodsType" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">TotalQuantity<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="totalQuantity" col="TotalQuantity" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">ExecutionTime<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="executionTime" col="ExecutionTime" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">OperationTime<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="operationTime" col="OperationTime" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">ShippingDock<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="shippingDock" col="ShippingDock" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">UserName<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="userName" col="UserName" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">DeptName<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="deptName" col="DeptName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">MissonType<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="missonType" col="MissonType" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">Destination<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="destination" col="Destination" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">CreateTime<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="createTime" col="CreateTime" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">FinishTime<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="finishTime" col="FinishTime" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">OrderStatus<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="orderStatus" col="OrderStatus" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">UserId<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="userId" col="UserId" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">DeptId<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="deptId" col="DeptId" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">Remarks<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="remarks" col="Remarks" type="text" class="form-control" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    $(function () {
+        getForm();
+
+        $('#form').validate({
+            rules: {
+                orderNo: { required: true }
+            }
+        });
+    });
+
+    function getForm() {
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/ScheduleManage/OrderBrowser/GetFormJson")' + '?id=' + id,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        $('#form').setWebControls(obj.Data);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/ScheduleManage/OrderBrowser/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+
