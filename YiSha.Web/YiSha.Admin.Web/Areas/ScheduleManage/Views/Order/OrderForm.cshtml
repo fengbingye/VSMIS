@@ -153,5 +153,31 @@
             });
         }
     }
+    $("#goodsType").change(function () {
+
+        goods_sel = $("#goodsType option:checked").val();
+        // 1 成品 2 原材料
+        if (goods_sel == 1) {
+
+            $('#missonType').ysComboBox('setValue', 1);
+            $("#missonType").prop("disabled", true); 
+            $("#shippingDock").ysComboBox({
+                data: top.getDataDict("ShippingDock1"),
+                key: "DictKey",
+                value: "DictValue",
+                class: "form-control"
+            });
+        }
+        else {
+            $("#shippingDock").ysComboBox({
+                data: top.getDataDict("ShippingDock2"),
+                key: "DictKey",
+                value: "DictValue",
+                class: "form-control"
+            });
+        }       
+
+
+    });
 </script>
 

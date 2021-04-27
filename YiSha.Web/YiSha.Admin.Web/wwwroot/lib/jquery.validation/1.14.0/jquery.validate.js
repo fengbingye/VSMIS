@@ -331,6 +331,7 @@ $.extend( $.validator, {
 		email: "Please enter a valid email address.",
 		url: "Please enter a valid URL.",
 		date: "Please enter a valid date.",
+		checkCar: "车牌格式不对！.",
 		dateISO: "Please enter a valid date ( ISO ).",
 		number: "Please enter a valid number.",
 		digits: "Please enter only digits.",
@@ -1272,6 +1273,12 @@ $.extend( $.validator, {
 		rangelength: function( value, element, param ) {
 			var length = $.isArray( value ) ? value.length : this.getLength( value, element );
 			return this.optional( element ) || ( length >= param[ 0 ] && length <= param[ 1 ] );
+		},
+		//自定义规则 检查车牌号
+		checkCar: function (value, element, param) {
+			var checkPwd = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/;
+			return this.optional(element) || (checkPwd.test(value));
+
 		},
 
 		// http://jqueryvalidation.org/min-method/

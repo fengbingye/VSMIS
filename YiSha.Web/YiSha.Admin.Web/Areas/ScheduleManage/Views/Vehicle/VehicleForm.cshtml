@@ -164,8 +164,16 @@
 
             rules: {
                 driverName: { required: true },
-                driverPhone: { required: true },
-                driverIdentityNo: { required: true },
+                driverPhone: {
+                    required: true,
+                    isPhone: true
+                },
+                driverIdentityNo: {
+                    required: true,
+                    minlength: 18,
+                    maxlength: 18
+
+                },
                 missonType_select: { required: true },
                 goodsType_select: { required: true },
                 orderNo: { required: true },
@@ -174,7 +182,10 @@
                 billNumber: { required: true },
                 cabinetNo: { required: true },
                 destination_select: { required: true },
-                vehicleNo: { required: true }
+                vehicleNo: {
+                    required: true,
+                    checkCar: true
+                }
             }
         });
     });

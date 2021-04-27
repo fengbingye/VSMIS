@@ -21,9 +21,42 @@
     }
     function getDataDict(dictType) {
         var arr = [];
+        var dockType = 0;
+        if (dictType == "ShippingDock1") {
+            dictType = "ShippingDock";
+            dockType = 1;
+        }
+        if (dictType == "ShippingDock2") {
+            dictType = "ShippingDock";
+            dockType = 2;
+        }
+
         for (var i = 0; i < dataDict[dictType].length; i++) {
             if (dataDict[dictType][i].DictStatus == 1) {
-                arr.push(dataDict[dictType][i]);
+                if (dockType == 0) {
+                    arr.push(dataDict[dictType][i]);
+                }
+                if (dockType == 1) {
+                    if (dataDict[dictType][i].DictKey < 30) {
+                        arr.push(dataDict[dictType][i]);
+                    }
+                }
+                if (dockType == 2) {
+                    if (dataDict[dictType][i].DictKey >= 30) {
+                        arr.push(dataDict[dictType][i]);
+                    }
+                }
+            }
+        }
+        return arr;
+    }
+    function getDataDictDock(dictType) {
+        var arr = [];
+        for (var i = 0; i < dataDict[dictType].length; i++) {
+            if (dataDict[dictType][i].DictStatus == 1) {
+                //if (dataDict[dictType][i].DictKey < 30) {
+                    arr.push(dataDict[dictType][i]);
+               // }
             }
         }
         return arr;

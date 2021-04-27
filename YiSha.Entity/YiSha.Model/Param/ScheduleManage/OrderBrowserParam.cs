@@ -21,4 +21,5 @@ namespace YiSha.Model.Param.ScheduleManage
         public int? StartOrderStatus { get; set; }
         public int? EndOrderStatus { get; set; }
     }
+   
 }

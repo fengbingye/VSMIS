@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <Folder Include="ToolManage\" />
-    <Folder Include="ScheduleManage\" />
   </ItemGroup>
 
 </Project>
