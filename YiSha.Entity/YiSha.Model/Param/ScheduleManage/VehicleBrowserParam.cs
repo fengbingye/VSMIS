@@ -10,7 +10,6 @@ namespace YiSha.Model.Param.ScheduleManage
     /// 日 期：2021-04-26 12:06
     /// 描 述：车辆记录查询实体查询类
     /// </summary>
-    public class VehicleBrowserListParam : DateTimeParam
     {
         public string DriverName { get; set; }
         public string DriverIdentityNo { get; set; }

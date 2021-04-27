@@ -10,7 +10,6 @@ namespace YiSha.Model.Param.ScheduleManage
     /// 日 期：2021-04-26 12:03
     /// 描 述：订单记录查询实体查询类
     /// </summary>
-    public class OrderBrowserListParam : DateTimeParam
     {
         public string OrderNo { get; set; }
         public int? MissonType { get; set; }
