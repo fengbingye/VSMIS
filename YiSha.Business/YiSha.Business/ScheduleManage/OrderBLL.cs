@@ -62,9 +62,6 @@ namespace YiSha.Business.ScheduleManage
         public async Task<TData<string>> SaveForm(OrderEntity entity)
         {
             TData<string> obj = new TData<string>();
-            await orderService.SaveForm(entity);
-            obj.Data = entity.Id.ParseToString();
-            obj.Tag = 1;
             //订单结束时将订单及关联车辆移至历史记录
             if (entity.OrderStatus == 3 || entity.OrderStatus == 4)
             {
@@ -76,7 +73,15 @@ namespace YiSha.Business.ScheduleManage
                 long.TryParse(entity.Id.ParseToString(), out lId);
                 if (lId < 1)
                     return obj;
-                string sVehicleIds = await orderService.GetVehicleIds(lId);
+                //判断订单匹配车辆状态（获取匹配车辆未完成数量）（Fdy@2021.5.12）
+                int iLineNum = await orderService.GetVehicleLineNum(lId);
+                if (iLineNum > 0)
+                {
+                    obj.Message = "车辆装卸货未完成！";
+                    return obj;
+                }
+                await orderService.SaveForm(entity); //保存订单数据
+                string sVehicleIds = await orderService.GetVehicleIds(lId); //将车辆数据移至历史记录
                 //将OrderEntity数据写入OrderBrowserEntity
                 OrderBrowserEntity obEntity = new OrderBrowserEntity();
                 obEntity.OrderId = entity.Id;
@@ -100,6 +105,18 @@ namespace YiSha.Business.ScheduleManage
                 //删除OrderEntity数据
                 await DeleteForm(entity.Id.ParseToString());
             }
+            else
+            {
+                int iRtn = await orderService.SaveForm(entity);
+                //判断订单号是否存在（Fdy@2021.5.13）
+                if (iRtn < 0)
+                {
+                    obj.Message = "订单号已经存在！";
+                    return obj;
+                }
+            }
+            obj.Data = entity.Id.ParseToString();
+            obj.Tag = 1;
             return obj;
         }
 

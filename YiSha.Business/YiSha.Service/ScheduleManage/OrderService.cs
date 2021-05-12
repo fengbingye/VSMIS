@@ -20,7 +20,7 @@ namespace YiSha.Service.ScheduleManage
     /// 日 期：2021-03-17 10:43
     /// 描 述：订单录入服务类
     /// </summary>
-    public class OrderService :  RepositoryFactory
+    public class OrderService : RepositoryFactory
     {
         #region 获取数据
         public async Task<List<OrderEntity>> GetList(OrderListParam param)
@@ -33,7 +33,7 @@ namespace YiSha.Service.ScheduleManage
         public async Task<List<OrderEntity>> GetPageList(OrderListParam param, Pagination pagination)
         {
             var expression = ListFilter(param);
-            var list= await this.BaseRepository().FindList(expression, pagination);
+            var list = await this.BaseRepository().FindList(expression, pagination);
             return list.ToList();
         }
 
@@ -49,7 +49,7 @@ namespace YiSha.Service.ScheduleManage
             expression = expression.And(t => t.OrderId == id);
             //expression = expression.And(t => t.Status == 2 || t.Status == 3);
             var list = await this.BaseRepository().FindList(expression);
-            foreach(VehicleEntity item in list)
+            foreach (VehicleEntity item in list)
             {
                 if (sIds.Length > 0)
                     sIds += ",";
@@ -84,25 +84,53 @@ namespace YiSha.Service.ScheduleManage
                 await SaveVehicleBrowserForm(vbEntity);
             }
             //删除VehicleEntity数据
-            if (sIds.Length > 0) 
+            if (sIds.Length > 0)
                 await DeleteVehicleForm(sIds);
             return sIds;
+        }
+        //获取指定订单关联车辆的为完成数量（Fdy@2021.5.12）
+        public async Task<int> GetVehicleLineNum(long id)
+        {
+            int iRtn = 0;
+            var expression = LinqExtensions.True<VehicleEntity>();
+            expression = expression.And(t => t.OrderId == id);
+            expression = expression.And(t => t.Status < 4);
+            var list = await this.BaseRepository().FindList(expression);
+            iRtn = list.Count();
+            return iRtn;
+        }
+        //获取指定订单号数量（Fdy@2021.5.13）
+        public async Task<int> GetOrderNoCnt(string sOrderNo)
+        {
+            int iRtn = 0;
+            var expression = LinqExtensions.True<OrderEntity>();
+            expression = expression.And(t => t.OrderNo == sOrderNo);
+            var list = await this.BaseRepository().FindList(expression);
+            iRtn = list.Count();
+            return iRtn;
         }
         #endregion
 
         #region 提交数据
-        public async Task SaveForm(OrderEntity entity)
+        public async Task<int> SaveForm(OrderEntity entity)
         {
             if (entity.Id.IsNullOrZero())
             {
+                //判断订单号是否存在（Fdy@2021.5.13）
+                int iCnt = await GetOrderNoCnt(entity.OrderNo);
+                if (iCnt > 0)
+                {
+                    return -1;
+                }
                 entity.Create();
                 await this.BaseRepository().Insert(entity);
             }
             else
             {
-                
+
                 await this.BaseRepository().Update(entity);
             }
+            return 1;
         }
 
         public async Task DeleteForm(string ids)
